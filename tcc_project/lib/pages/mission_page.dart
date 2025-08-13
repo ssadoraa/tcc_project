@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_project/pages/details_page.dart';
+import 'package:tcc_project/widgets/qr_scanner.dart';
 
 class MissionPage extends StatefulWidget {
   MissionPage({Key? key}) : super(key: key);
@@ -100,9 +101,12 @@ class _MissionPageState extends State<MissionPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Ação do botão
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => QRScannerPage()),
+          );
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.qr_code_scanner),
       ),
     );
   }
