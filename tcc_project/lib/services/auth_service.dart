@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,10 @@ class AuthService extends ChangeNotifier {
 
   register(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential newUser =  await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseFirestore.instance.collection('users').doc(newUser.user?.uid).set({
+
+      }); 
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

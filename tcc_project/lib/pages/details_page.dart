@@ -7,7 +7,6 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Aqui você pode buscar as infos da missão pelo id, por exemplo:
     final mission = missionId.firstWhere((m) => m['id'] == missionId);
 
     return Scaffold(
