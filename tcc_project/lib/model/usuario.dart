@@ -1,8 +1,7 @@
 class Usuario {
   final String id;
   final String nome;
-  final String email;
-  final DateTime dataNascimento;
+  final String dataNascimento;
   final String pais;
   final String estado;
   final String cidade;
@@ -10,7 +9,6 @@ class Usuario {
   Usuario({
     required this.id,
     required this.nome,
-    required this.email,
     required this.dataNascimento,
     required this.pais,
     required this.estado,
@@ -21,8 +19,7 @@ class Usuario {
     return Usuario(
       id: data['id'] ?? '',
       nome: data['nome'] ?? '',
-      email: data['email'] ?? '',
-      dataNascimento: DateTime.parse(data['dataNascimento'] ?? '2000-01-01'),
+      dataNascimento: data['dataNascimento'] ?? '2000-01-01',
       pais: data['pais'] ?? '',
       estado: data['estado'] ?? '',
       cidade: data['cidade'] ?? '',
@@ -33,8 +30,7 @@ class Usuario {
     return {
       'id': id,
       'nome': nome,
-      'email': email,
-      'dataNascimento': dataNascimento.toIso8601String(),
+      'dataNascimento': dataNascimento,
       'pais': pais,
       'estado': estado,
       'cidade': cidade,

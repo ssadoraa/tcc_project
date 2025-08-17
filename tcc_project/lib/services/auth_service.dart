@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc_project/model/usuario.dart';
 
 class AuthException implements Exception {
   String message;
@@ -8,7 +9,8 @@ class AuthException implements Exception {
 }
 
 class AuthService extends ChangeNotifier {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? usuario;
   bool isLoading = true;
 
@@ -29,12 +31,24 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  register(String email, String password) async {
+  register(String email, String senha, Usuario dadosUsuario) async {
     try {
-      UserCredential newUser =  await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      await FirebaseFirestore.instance.collection('users').doc(newUser.user?.uid).set({
+      UserCredential newUser = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: senha,
+      );
 
-      }); 
+      final usuario = Usuario(
+        id: newUser.user?.uid ?? '',
+        nome: dadosUsuario.nome,
+        dataNascimento: dadosUsuario.dataNascimento,
+        pais: dadosUsuario.pais,
+        estado: dadosUsuario.estado,
+        cidade: dadosUsuario.cidade,
+      ).toMap();
+
+      await _firestore.collection('users').doc(newUser.user?.uid).set(usuario);
+
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

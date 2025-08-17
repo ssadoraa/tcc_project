@@ -88,7 +88,7 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
                   Container(
                     width: width,
                     height: height,
-                    color: const Color.fromARGB(255, 0, 0, 0).withOpacity(1.0),
+                    color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.5),
                   ),
                   Positioned(
                     top: (height - scanBoxSize) / 2,

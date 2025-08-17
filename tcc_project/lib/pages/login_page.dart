@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tcc_project/controller/login_controller.dart';
+import 'package:tcc_project/pages/register_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
                         child: TextFormField(
                           controller: controller.email,
                           decoration: const InputDecoration(
@@ -39,19 +40,16 @@ class LoginPage extends StatelessWidget {
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Por favor, insira seu e-mail corretamente.';
+                              return 'Insira seu e-mail corretamente.';
                             }
                             return null;
                           },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                          vertical: 12.0,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
                         child: TextFormField(
-                          controller: controller.password,
+                          controller: controller.senha,
                           obscureText: true,
                           decoration: const InputDecoration(
                             labelText: 'Senha',
@@ -67,6 +65,9 @@ class LoginPage extends StatelessWidget {
                           },
                         ),
                       ),
+
+                      if (!controller.isLogin) const RegisterPage(),
+
                       Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: ElevatedButton(
@@ -106,40 +107,6 @@ class LoginPage extends StatelessWidget {
                                   ],
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                            ),
-                            child: Image.asset(
-                              'assets/images/google.jpg',
-                              width: 48,
-                              height: 48,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                            ),
-                            child: Image.asset(
-                              'assets/images/outlook.png',
-                              width: 48,
-                              height: 48,
-                            ),
-                          ),
-                        ],
                       ),
                       TextButton(
                         onPressed: () {
