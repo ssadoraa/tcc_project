@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GuidesContact extends StatelessWidget {
   GuidesContact({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class GuidesContact extends StatelessWidget {
               return Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
-                  side: BorderSide(color: Colors.blueAccent, width: 1),
+                  side: BorderSide(color: const Color.fromARGB(255, 11, 35, 58), width: 1),
                 ),
                 elevation: 5,
                 margin: EdgeInsets.symmetric(vertical: 8),
@@ -47,22 +48,75 @@ class GuidesContact extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                            height: 16,
+                          ),
                       Text(
-                        mission['email'],
+                        mission['cad'],
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[700],
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        mission['telefone'],
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri emailUri = Uri(scheme: 'mailto', path: mission['email']);
+                              if (await canLaunchUrl(emailUri)) {
+                                await launchUrl(emailUri);
+                              }
+                            },
+                            child: Text(
+                              mission['email'],
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final Uri telUri = Uri(scheme: 'tel', path: mission['telefone']);
+                              if (await canLaunchUrl(telUri)) {
+                                await launchUrl(telUri);
+                              }
+                            },
+                            child: Text(
+                              mission['telefone'],
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          )
+
+                        ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            mission['cidade'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          Text(
+                            mission['estado'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
