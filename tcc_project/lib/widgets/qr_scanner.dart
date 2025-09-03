@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tcc_project/services/qr_service.dart';
 
 class QRScannerPage extends StatefulWidget {
-  QRScannerPage({Key? key}) : super(key: key);
-
   @override
   _QRScannerPageState createState() => _QRScannerPageState();
 }
@@ -14,9 +12,9 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
   final MobileScannerController _cameraController = MobileScannerController();
   late final AnimationController _animationController;
   late final Animation<double> _animation;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  final QrService _qrService = QrService();
 
   @override
   void initState() {
@@ -50,34 +48,9 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
 
     _cameraController.stop();
 
-    try {
-      final query = await _firestore
-          .collection("missions")
-          .where("qr_code", isEqualTo: codeLido)
-          .limit(1)
-          .get();
-
-      if (query.docs.isEmpty) {
-        _showMessage("QR inválido. Tente novamente.");
-        _cameraController.start();
-        return;
-      }
-
-      final missionDoc = query.docs.first;
-      final missionId = missionDoc.id;
-
-      await _firestore
-          .collection("users")
-          .doc(userId)
-          .collection("unlockedMissions")
-          .doc(missionId)
-          .set({"unlockedAt": FieldValue.serverTimestamp()});
-
-      _showMessage("Missão desbloqueada: ${missionDoc["titulo"]}");
-    } catch (e) {
-      _showMessage("Erro ao processar QR: $e");
-      _cameraController.start();
-    }
+    final msg = await _qrService.unlockMission(userId, codeLido);
+    _showMessage(msg);
+    _cameraController.start();
   }
 
   void _showMessage(String msg) {
@@ -121,7 +94,7 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
                   Container(
                     width: width,
                     height: height,
-                    color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.5),
+                    color: Colors.black.withOpacity(0.5),
                   ),
                   Positioned(
                     top: (height - scanBoxSize) / 2,
@@ -131,10 +104,7 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
                       height: scanBoxSize,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        border: Border.all(
-                          color: Color.fromARGB(255, 155, 152, 152),
-                          width: 4,
-                        ),
+                        border: Border.all(color: Colors.grey, width: 4),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: AnimatedBuilder(
@@ -148,7 +118,7 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
                                 right: 0,
                                 child: Container(
                                   height: 3,
-                                  color: Color.fromARGB(255, 88, 190, 5),
+                                  color: Colors.green,
                                 ),
                               ),
                             ],
