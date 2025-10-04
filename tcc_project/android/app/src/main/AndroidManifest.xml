@@ -3,6 +3,11 @@
         android:label="DesenGo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data
+            android:name="com.mapbox.token"
+            android:value="pk.eyJ1IjoiaXNhZG9yYWJ2IiwiYSI6ImNtZmg2amN4cTA3dnUybnB5NG0yemp4bTIifQ.VXBpfUI3DCtkYKZnkD1aWg" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
