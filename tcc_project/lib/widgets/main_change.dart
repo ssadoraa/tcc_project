@@ -3,6 +3,7 @@ import 'package:tcc_project/pages/config_page.dart';
 import 'package:tcc_project/pages/infos_page.dart';
 import 'package:tcc_project/pages/map_page.dart';
 import 'package:tcc_project/pages/mission_page.dart';
+import 'package:tcc_project/theme/app_colors.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -32,7 +33,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('DesenGo')),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(85.0),
+        child: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(top: 22.0),
+            child: Text(
+              'DesenGo',
+              style: TextStyle(fontSize: 22),
+            ),
+          ),
+          backgroundColor: AppColors.secondary,
+        ),
+      ),
       body: _getPage(itemSelecionado),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: itemSelecionado,

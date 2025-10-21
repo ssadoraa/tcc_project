@@ -7,6 +7,7 @@ class AppTheme {
     return ThemeData(
       textTheme: GoogleFonts.comfortaaTextTheme(),
       colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+      scaffoldBackgroundColor: AppColors.background
     );
   }
 }

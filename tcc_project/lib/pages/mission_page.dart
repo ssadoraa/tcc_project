@@ -3,10 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_project/pages/details_page.dart';
 import 'package:tcc_project/services/mission_service.dart';
+import 'package:tcc_project/theme/app_colors.dart';
 import 'package:tcc_project/widgets/qr_scanner.dart';
 
 class MissionPage extends StatefulWidget {
-  const MissionPage({Key? key}) : super(key: key);
+  MissionPage({Key? key}) : super(key: key);
 
   @override
   _MissionPageState createState() => _MissionPageState();
@@ -15,22 +16,29 @@ class MissionPage extends StatefulWidget {
 class _MissionPageState extends State<MissionPage> {
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   final MissionService _missionService = MissionService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mission Page')),
       body: StreamBuilder<QuerySnapshot>(
         stream: _missionService.getMissions(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, missionSnapshot) {
+          if (missionSnapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
+          if (missionSnapshot.hasError) {
+            return Center(child: Text('Erro: ${missionSnapshot.error}'));
           }
 
-          final missions = snapshot.data!.docs;
+          final missions = missionSnapshot.data!.docs;
 
           return StreamBuilder<Set<String>>(
             stream: _missionService.getUnlockedMissions(userId),
@@ -40,25 +48,102 @@ class _MissionPageState extends State<MissionPage> {
               }
 
               final unlocked = unlockedSnapshot.data!;
+              final total = missions.length;
+              final unlockedCount = unlocked.length;
+              final progress = total > 0 ? unlockedCount / total : 0.0;
 
-              return GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: (MediaQuery.of(context).size.width / 150)
-                      .floor()
-                      .clamp(2, 6),
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 1,
-                ),
-                itemCount: missions.length,
-                itemBuilder: (context, index) {
-                  final mission = missions[index];
-                  final data = mission.data() as Map<String, dynamic>;
-                  final isUnlocked = unlocked.contains(mission.id);
+              final filteredMissions = missions.where((mission) {
+                final data = mission.data() as Map<String, dynamic>;
+                final title = (data["titulo"] ?? '').toString().toLowerCase();
+                return title.contains(_searchQuery);
+              }).toList();
 
-                  return _buildMissionCard(context, mission.id, data, isUnlocked);
-                },
+              return Column(
+                children: [
+                  SizedBox(height: 15),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.toLowerCase().trim();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Buscar missão...',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        filled: true,
+                        fillColor: AppColors.secondary,
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 15,
+                            backgroundColor: Colors.grey[300],
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              progress == 1
+                                  ? const Color.fromARGB(255, 133, 205, 135)
+                                  : const Color.fromARGB(255, 112, 153, 222),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Text(
+                            '$unlockedCount/$total',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: filteredMissions.isEmpty
+                        ? Center(
+                            child: Text(
+                              'Nenhuma missão encontrada.',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )
+                        : GridView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: (MediaQuery.of(context).size.width / 150)
+                                      .floor()
+                                      .clamp(2, 6),
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 1,
+                            ),
+                            itemCount: filteredMissions.length,
+                            itemBuilder: (context, index) {
+                              final mission = filteredMissions[index];
+                              final data = mission.data() as Map<String, dynamic>;
+                              final isUnlocked = unlocked.contains(mission.id);
+                              return _buildMissionCard(context, mission.id, data, isUnlocked);
+                            },
+                          ),
+                  ),
+                ],
               );
             },
           );
@@ -115,7 +200,7 @@ class _MissionPageState extends State<MissionPage> {
                 Padding(
                   padding: EdgeInsets.only(top: 13, left: 8, right: 8),
                   child: Text(
-                    data["titulo"],
+                    data["titulo"] ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isUnlocked ? Colors.black : Colors.grey[600],
@@ -130,7 +215,7 @@ class _MissionPageState extends State<MissionPage> {
                     "Clique para ver detalhes",
                     style: TextStyle(
                       fontSize: 9,
-                      color: Colors.grey[600],
+                      color: Colors.grey,
                     ),
                   ),
                 ),
