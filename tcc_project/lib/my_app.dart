@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_project/theme/app_theme.dart';
 import 'package:tcc_project/widgets/auth_check.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,9 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DesenGo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
+      theme: AppTheme.lightTheme,
       home: AuthCheck(),
     );
   }

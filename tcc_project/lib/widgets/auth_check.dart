@@ -4,32 +4,27 @@ import 'package:tcc_project/widgets/main_change.dart';
 import 'package:tcc_project/pages/login_page.dart';
 import 'package:tcc_project/services/auth_service.dart';
 
-class AuthCheck extends StatefulWidget {
-  AuthCheck({Key? key}) : super(key: key);
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({Key? key}) : super(key: key);
 
-  @override
-  _AuthCheckState createState() => _AuthCheckState();
-}
-
-class _AuthCheckState extends State<AuthCheck> {
   @override
   Widget build(BuildContext context) {
-    AuthService authService = Provider.of<AuthService>(context);
+    final authService = context.watch<AuthService>();
 
     if (authService.isLoading) {
-      return loading();
-    } else if (authService.usuario == null) {
-      return LoginPage();
-    } else {
-      return HomePage();
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      );
     }
-  }
 
-  loading() {
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    if (authService.usuario == null) {
+      return const LoginPage();
+    }
+
+    return HomePage();
   }
 }

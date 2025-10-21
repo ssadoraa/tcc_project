@@ -7,7 +7,6 @@ class LoginController extends ChangeNotifier {
 
   TextEditingController email = TextEditingController();
   TextEditingController senha = TextEditingController();
-
   TextEditingController nome = TextEditingController();
   TextEditingController dataNascimento = TextEditingController();
   TextEditingController pais = TextEditingController();
@@ -18,11 +17,16 @@ class LoginController extends ChangeNotifier {
   bool isLogin = true;
   bool loading = false;
 
-  final AuthService _authService = AuthService();
+  late AuthService _authService;
+
+  void updateAuthService(AuthService authService) {
+    _authService = authService;
+  }
 
   String get titulo => isLogin ? 'Login' : 'Registro';
   String get botao => isLogin ? 'Entrar' : 'Registrar';
-  String get toggleButton => isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Login';
+  String get toggleButton =>
+      isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Login';
 
   void setFormAction(bool login) {
     isLogin = login;
@@ -72,5 +76,16 @@ class LoginController extends ChangeNotifier {
       loading = false;
       notifyListeners();
     }
+  }
+
+  void clearControllers() {
+    email.clear();
+    senha.clear();
+    nome.clear();
+    dataNascimento.clear();
+    pais.clear();
+    estado.clear();
+    cidade.clear();
+    confirmarSenha.clear();
   }
 }
