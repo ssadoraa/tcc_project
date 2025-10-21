@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tcc_project/services/qr_service.dart';
+import 'package:tcc_project/theme/app_colors.dart';
+import 'package:confetti/confetti.dart';
 
 class QRScannerPage extends StatefulWidget {
   @override
   _QRScannerPageState createState() => _QRScannerPageState();
 }
 
-class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProviderStateMixin {
+class _QRScannerPageState extends State<QRScannerPage>
+    with SingleTickerProviderStateMixin {
   final MobileScannerController _cameraController = MobileScannerController();
   late final AnimationController _animationController;
   late final Animation<double> _animation;
   final String userId = FirebaseAuth.instance.currentUser!.uid;
-
   final QrService _qrService = QrService();
+  bool _isProcessing = false;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
@@ -25,10 +29,11 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
     )..repeat(reverse: true);
 
     _animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 5),
     );
   }
 
@@ -36,58 +41,120 @@ class _QRScannerPageState extends State<QRScannerPage> with SingleTickerProvider
   void dispose() {
     _cameraController.dispose();
     _animationController.dispose();
+    _confettiController.dispose();
     super.dispose();
   }
 
   void qrRead(BarcodeCapture capture) async {
+    if (_isProcessing) return;
+
     final barcodes = capture.barcodes;
     if (barcodes.isEmpty) return;
 
     final codeLido = barcodes.first.rawValue;
     if (codeLido == null) return;
 
-    _cameraController.stop();
+    _isProcessing = true;
 
-    final msg = await _qrService.unlockMission(userId, codeLido);
-    _showMessage(msg);
-    _cameraController.start();
-  }
+    final result = await _qrService.unlockMission(userId, codeLido);
+    final String msg = result["msg"];
+    final bool isNew = result["isNew"];
 
-  void _showMessage(String msg) {
-    showDialog(
+    if (isNew) {
+      _confettiController.play();
+    }
+
+    await showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Resultado"),
-        content: Text(msg),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: Text("Ok"),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Colors.transparent,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(50),
+              decoration: BoxDecoration(
+                color: isNew ? AppColors.background : AppColors.secondary,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 16),
+                  Text(
+                    msg,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () => {
+                      Navigator.pop(context),
+                      Navigator.pop(context),
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: isNew
+                          ? AppColors.primary
+                          : AppColors.primary,
+                    ),
+                    child: Text("Ok"),
+                  ),
+                ],
+              ),
+            ),
+            if (isNew)
+              Positioned.fill(
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  shouldLoop: false,
+                  numberOfParticles: 100,
+                  gravity: 0.3,
+                  colors: [
+                    Colors.red,
+                    Colors.green,
+                    Colors.blue,
+                    Colors.yellow,
+                    Colors.purple,
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
+    _isProcessing = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    const double scanBoxSize = 250.0;
+    double scanBoxSize = 250.0;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Escanear QR Code")),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(65.0),
+        child: AppBar(
+          title: Padding(
+            padding: EdgeInsets.only(top: 13.0),
+            child: Text('Escanear QR Code', style: TextStyle(fontSize: 20)),
+          ),
+          backgroundColor: AppColors.secondary,
+        ),
+      ),
       body: Stack(
         children: [
-          MobileScanner(
-            controller: _cameraController,
-            onDetect: qrRead,
-          ),
+          MobileScanner(controller: _cameraController, onDetect: qrRead),
           LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth;
-              final height = constraints.maxHeight;
+            builder: (context, raints) {
+              final width = raints.maxWidth;
+              final height = raints.maxHeight;
 
               return Stack(
                 children: [

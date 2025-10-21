@@ -77,7 +77,10 @@ class _MissionPageState extends State<MissionPage> {
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 0,
+                        ),
                         filled: true,
                         fillColor: AppColors.secondary,
                       ),
@@ -107,11 +110,9 @@ class _MissionPageState extends State<MissionPage> {
                           alignment: Alignment.bottomRight,
                           child: Text(
                             '$unlockedCount/$total',
-                            style: TextStyle(
-                              fontSize: 10,
-                            ),
+                            style: TextStyle(fontSize: 10),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -125,21 +126,32 @@ class _MissionPageState extends State<MissionPage> {
                             ),
                           )
                         : GridView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: (MediaQuery.of(context).size.width / 150)
-                                      .floor()
-                                      .clamp(2, 6),
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                              childAspectRatio: 1,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
                             ),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount:
+                                      (MediaQuery.of(context).size.width / 150)
+                                          .floor()
+                                          .clamp(2, 6),
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  childAspectRatio: 1,
+                                ),
                             itemCount: filteredMissions.length,
                             itemBuilder: (context, index) {
                               final mission = filteredMissions[index];
-                              final data = mission.data() as Map<String, dynamic>;
+                              final data =
+                                  mission.data() as Map<String, dynamic>;
                               final isUnlocked = unlocked.contains(mission.id);
-                              return _buildMissionCard(context, mission.id, data, isUnlocked);
+                              return _buildMissionCard(
+                                context,
+                                mission.id,
+                                data,
+                                isUnlocked,
+                              );
                             },
                           ),
                   ),
@@ -156,13 +168,18 @@ class _MissionPageState extends State<MissionPage> {
             MaterialPageRoute(builder: (_) => QRScannerPage()),
           );
         },
+        backgroundColor: AppColors.secondary,
         child: Icon(Icons.qr_code_scanner),
       ),
     );
   }
 
   Widget _buildMissionCard(
-      BuildContext context, String missionId, Map<String, dynamic> data, bool isUnlocked) {
+    BuildContext context,
+    String missionId,
+    Map<String, dynamic> data,
+    bool isUnlocked,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: isUnlocked
@@ -177,16 +194,16 @@ class _MissionPageState extends State<MissionPage> {
           : null,
       child: Card(
         color: isUnlocked ? Colors.white : Colors.grey[300],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Stack(
           children: [
             Column(
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
                     child: Image.network(
                       data["image"] ??
                           "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60",
@@ -210,26 +227,22 @@ class _MissionPageState extends State<MissionPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 5, top: 8),
+                  padding: EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    bottom: 5,
+                    top: 8,
+                  ),
                   child: Text(
                     "Clique para ver detalhes",
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 9, color: Colors.grey),
                   ),
                 ),
                 SizedBox(height: 8),
               ],
             ),
             if (!isUnlocked)
-              Center(
-                child: Icon(
-                  Icons.lock,
-                  size: 40,
-                  color: Colors.white,
-                ),
-              ),
+              Center(child: Icon(Icons.lock, size: 40, color: Colors.white)),
           ],
         ),
       ),
