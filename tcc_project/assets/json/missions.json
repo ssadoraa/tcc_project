@@ -1,0 +1,25 @@
+[
+  {
+    "qr_code": "TRVSRM001",
+    "titulo": "Travessia Rifa",
+    "distancia_km": 8.651,
+    "tempo_estimado": "4h30min",
+    "altitude_inicial": 704,
+    "altitude_maxima": 891,
+    "altitude_final": 195,
+    "ganho_altitude": 175,
+    "localizacao": "Serra da Rifa",
+    "municipio": "Santa Maria Madalena",
+    "descricao": "Travessia bonita e tranquila começando em uma estrada abandonada que se transforma em trilha. Continua descendo por vales com pastos, sítios, riachos e rios, passando pelo interior de uma floresta exuberante com uma cachoeira, belas formações rochosas e paisagens.",
+    "flora_relevante": ["bromélias", "orquídeas", "bambu", "palmeiras"],
+    "infraestrutura": ["sem infraestrutura"],
+    "agua": true,
+    "dificuldade": "Médio",
+    "condicao_trilha": "boa",
+    "recomendacao": "recomendável",
+    "atrativos": ["rios", "riachos", "cachoeira", "poços naturais"],
+    "historico": "Caminho usado por tropeiros para o escoamento das colheitas de café. Há registros de coleta de flora pelo biólogo Joaquim Santos Lima em 1934. A região do Imbé é considerada pelos ornitólogos como uma das áreas mais ricas em avifauna do planeta. Existe uma alta diversidade de aves, inclusive de grande porte.",
+    "latitude": -22.9519,
+    "longitude": -43.2105
+  }
+]
