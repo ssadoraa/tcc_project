@@ -15,7 +15,6 @@ class _InfosPageState extends State<InfosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Infos Page')),
       body: ListView.builder(
         padding: EdgeInsets.all(16),
         itemCount: items.length,
