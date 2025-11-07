@@ -1,0 +1,50 @@
+[
+  {
+    "cad": "RJ-10001",
+    "nome": "Mariana Silva",
+    "cidade": "Santa Maria Madalena",
+    "estado": "RJ",
+    "email": "mariana.silva@example.com",
+    "telefone": "(22) 98877-1122"
+  },
+  {
+    "cad": "RJ-10002",
+    "nome": "Carlos Oliveira",
+    "cidade": "Santa Maria Madalena",
+    "estado": "RJ",
+    "email": "carlos.oliveira@example.com",
+    "telefone": "(22) 97766-3114"
+  },
+  {
+    "cad": "RJ-10003",
+    "nome": "Fernanda Costa",
+    "cidade": "São Fidélis",
+    "estado": "RJ",
+    "email": "fernanda.costa@example.com",
+    "telefone": "(22) 99888-5886"
+  },
+  {
+    "cad": "RJ-10004",
+    "nome": "Rodrigo Alves",
+    "cidade": "São Fidélis",
+    "estado": "RJ",
+    "email": "rodrigo.alves@example.com",
+    "telefone": "(22) 97777-8899"
+  },
+  {
+    "cad": "RJ-10005",
+    "nome": "Juliana Rocha",
+    "cidade": "Campos dos Goytacazes",
+    "estado": "RJ",
+    "email": "juliana.rocha@example.com",
+    "telefone": "(22) 96655-7788"
+  },
+  {
+    "cad": "RJ-10006",
+    "nome": "Eduardo Lima",
+    "cidade": "Campos dos Goytacazes",
+    "estado": "RJ",
+    "email": "eduardo.lima@example.com",
+    "telefone": "(22) 95544-6677"
+  }
+]

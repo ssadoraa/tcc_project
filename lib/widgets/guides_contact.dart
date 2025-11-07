@@ -21,7 +21,7 @@ class GuidesContact extends StatelessWidget {
         title: Text("Contatos de Guias", style: TextStyle(fontSize: 18))
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('guides').snapshots(),
+        stream: _firestore.collection('guides').orderBy('nome').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
