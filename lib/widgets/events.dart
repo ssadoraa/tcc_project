@@ -11,7 +11,9 @@ class Events extends StatelessWidget {
     final double cardWidth = MediaQuery.of(context).size.width * 0.90;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Eventos do Parque", style: TextStyle(fontSize: 18))),
+      appBar: AppBar(
+        title: Text("Eventos do Parque", style: TextStyle(fontSize: 18)),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('events').orderBy('data').snapshots(),
         builder: (context, snapshot) {
@@ -22,23 +24,45 @@ class Events extends StatelessWidget {
             return Center(child: Text("Nenhum evento disponível."));
 
           final events = snapshot.data!.docs;
+          final now = DateTime.now();
+          List<Map<String, dynamic>> futureEvents = [];
+          List<Map<String, dynamic>> pastEvents = [];
+
+          for (var doc in events) {
+            final event = doc.data() as Map<String, dynamic>;
+            Timestamp? timestamp = event['data'];
+            if (timestamp != null) {
+              DateTime eventDate = timestamp.toDate();
+              if (eventDate.isBefore(now)) {
+                pastEvents.add(event);
+              } else {
+                futureEvents.add(event);
+              }
+            } else {
+              futureEvents.add(event);
+            }
+          }
+
+          final sortedEvents = [...futureEvents, ...pastEvents];
 
           return PageView.builder(
             controller: PageController(viewportFraction: 0.9),
-            itemCount: events.length,
+            itemCount: sortedEvents.length,
             itemBuilder: (context, index) {
-              final event = events[index].data() as Map<String, dynamic>;
+              final event = sortedEvents[index];
               final title = event['titulo'] ?? 'Evento sem título';
+              final imageUrl = event['imagemUrl'] ??
+                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60';
 
               Timestamp? timestamp = event['data'];
               String formattedDate = 'Data não informada';
+              bool isPastEvent = false;
+
               if (timestamp != null) {
                 DateTime dateTime = timestamp.toDate();
                 formattedDate = DateFormat('dd/MM/yyyy\nHH:mm').format(dateTime);
+                isPastEvent = dateTime.isBefore(now);
               }
-
-              final imageUrl = event['imagemUrl'] ??
-                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60';
 
               return Center(
                 child: Container(
@@ -93,33 +117,49 @@ class Events extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EventDetailScreen(
-                                      imageUrl: imageUrl,
-                                      tag: 'event-${title}',
+                            if (!isPastEvent)
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => EventDetailScreen(
+                                        imageUrl: imageUrl,
+                                        tag: 'event-${title}',
+                                      ),
                                     ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color:Color.fromARGB(255, 124, 124, 124),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                );
-                              },
-                              child: Container(
+                                  child: Text(
+                                    "Ver mais",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            if (isPastEvent)
+                              Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 6, horizontal: 12),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 124, 124, 124),
+                                  color: Colors.redAccent,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Text(
-                                  "Ver mais",
+                                  "Evento já ocorreu",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),

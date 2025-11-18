@@ -100,33 +100,37 @@ class _ConfigPageState extends State<ConfigPage> {
                   },
                 ),
                 SizedBox(height: 12),
-                // Linha com os ícones das redes sociais
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
-                      onPressed: () {
-                        // Link para Facebook
-                      },
+                      icon: Icon(
+                        Icons.facebook,
+                        color: AppColors.background,
+                        size: 45,
+                      ),
+                      onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
-                      onPressed: () {
-                        // Link para Instagram
-                      },
+                      icon: Icon(
+                        Icons.facebook,
+                        color: AppColors.background,
+                        size: 45,
+                      ),
+                      onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
-                      onPressed: () {
-                        // Link para Twitter
-                      },
+                      icon: Icon(
+                        Icons.facebook,
+                        color: AppColors.background,
+                        size: 45,
+                      ),
+                      onPressed: () {},
                     ),
                   ],
                 ),
               ],
             ),
-
             SizedBox(height: 32),
             _buildLogoutButton(context),
           ],
@@ -144,6 +148,7 @@ class _ConfigPageState extends State<ConfigPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 24),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -154,29 +159,33 @@ class _ConfigPageState extends State<ConfigPage> {
               ),
             ],
           ),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: atualController,
-                  obscureText: true,
-                  decoration: InputDecoration(labelText: "Senha atual"),
-                ),
-                SizedBox(height: 12),
-                TextField(
-                  controller: novaController,
-                  obscureText: true,
-                  decoration: InputDecoration(labelText: "Nova senha"),
-                ),
-                SizedBox(height: 12),
-                TextField(
-                  controller: confirmarController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Confirmar nova senha",
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: atualController,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: "Senha atual"),
                   ),
-                ),
-              ],
+                  SizedBox(height: 12),
+                  TextField(
+                    controller: novaController,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: "Nova senha"),
+                  ),
+                  SizedBox(height: 12),
+                  TextField(
+                    controller: confirmarController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Confirmar nova senha",
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
