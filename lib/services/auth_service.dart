@@ -11,60 +11,49 @@ class AuthException implements Exception {
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   User? usuario;
   bool isLoading = true;
 
   AuthService() {
-    _authCheck();
-  }
-
-  _authCheck() {
-    _auth.authStateChanges().listen((User? user) {
-      usuario = (user == null) ? null : user;
+    _auth.authStateChanges().listen((user) {
+      usuario = user;
       isLoading = false;
       notifyListeners();
     });
   }
 
-  _getUser() {
-    usuario = _auth.currentUser;
-    notifyListeners();
-  }
-
-  register(String email, String senha, Usuario dadosUsuario) async {
+  Future<void> register(
+    String email,
+    String senha,
+    Usuario dadosUsuario,
+  ) async {
     try {
-      UserCredential newUser = await _auth.createUserWithEmailAndPassword(
+      final cred = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: senha,
       );
 
-      final usuario = Usuario(
-        id: newUser.user?.uid ?? '',
-        nome: dadosUsuario.nome,
-        dataNascimento: dadosUsuario.dataNascimento,
-        pais: dadosUsuario.pais,
-        estado: dadosUsuario.estado,
-        cidade: dadosUsuario.cidade,
-      ).toMap();
+      final uid = cred.user!.uid;
+      final data = dadosUsuario.copyWith(id: uid).toMap();
 
-      await _firestore.collection('users').doc(newUser.user?.uid).set(usuario);
+      await _firestore.collection("users").doc(uid).set(data);
 
-      _getUser();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        throw AuthException('A senha é muito fraca.');
-      } else if (e.code == 'email-already-in-use') {
-        throw AuthException('Este email já está cadastrado.');
-      } else {
-        throw AuthException('Erro ao cadastrar: ${e.message}');
+      switch (e.code) {
+        case 'weak-password':
+          throw AuthException('A senha é muito fraca.');
+        case 'email-already-in-use':
+          throw AuthException('Este email já está cadastrado.');
+        default:
+          throw AuthException('Erro ao cadastrar: ${e.message}');
       }
     }
   }
-  
-  login(String email, String password) async {
+
+  Future<void> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw AuthException('Email não encontrado. Cadastre-se primeiro.');
@@ -76,8 +65,46 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  logout() async {
+  Future<void> changePassword(String senhaAtual, String novaSenha) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw AuthException("Nenhum usuário logado.");
+
+      final cred = EmailAuthProvider.credential(
+        email: user.email!,
+        password: senhaAtual,
+      );
+
+      await user.reauthenticateWithCredential(cred);
+      await user.updatePassword(novaSenha);
+
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        throw AuthException("A senha atual está incorreta.");
+      } else if (e.code == 'weak-password') {
+        throw AuthException("A nova senha é muito fraca.");
+      } else {
+        throw AuthException("Erro ao alterar senha: ${e.message}");
+      }
+    }
+  }
+
+  Future<void> updateUserProfile(Usuario dados) async {
+    try {
+      final uid = _auth.currentUser?.uid;
+
+      if (uid == null) throw AuthException("Usuário não encontrado.");
+
+      await _firestore.collection("users").doc(uid).update(dados.toMap());
+
+      notifyListeners();
+    } catch (e) {
+      throw AuthException("Erro ao atualizar perfil: $e");
+    }
+  }
+
+  Future<void> logout() async {
     await _auth.signOut();
-    _getUser();
   }
 }

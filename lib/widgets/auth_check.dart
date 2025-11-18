@@ -22,7 +22,7 @@ class AuthCheck extends StatelessWidget {
     }
 
     if (authService.usuario == null) {
-      return const LoginPage();
+      return LoginPage();
     }
 
     return HomePage();

@@ -15,6 +15,24 @@ class Usuario {
     required this.cidade,
   });
 
+  Usuario copyWith({
+    String? id,
+    String? nome,
+    String? dataNascimento,
+    String? pais,
+    String? estado,
+    String? cidade,
+  }) {
+    return Usuario(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      dataNascimento: dataNascimento ?? this.dataNascimento,
+      pais: pais ?? this.pais,
+      estado: estado ?? this.estado,
+      cidade: cidade ?? this.cidade,
+    );
+  }
+
   factory Usuario.fromMap(Map<String, dynamic> data) {
     return Usuario(
       id: data['id'] ?? '',
