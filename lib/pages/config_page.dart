@@ -99,8 +99,34 @@ class _ConfigPageState extends State<ConfigPage> {
                     );
                   },
                 ),
+                SizedBox(height: 12),
+                // Linha com os ícones das redes sociais
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
+                      onPressed: () {
+                        // Link para Facebook
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
+                      onPressed: () {
+                        // Link para Instagram
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.facebook, color: AppColors.background, size: 45),
+                      onPressed: () {
+                        // Link para Twitter
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
+
             SizedBox(height: 32),
             _buildLogoutButton(context),
           ],
