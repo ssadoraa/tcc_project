@@ -104,6 +104,20 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  Future<Usuario> getUser(String uid) async {
+    final doc = await _firestore.collection('users').doc(uid).get();
+    final data = doc.data();
+    if (data == null) throw Exception('Usuário não encontrado');
+    return Usuario(
+      id: uid,
+      nome: data['nome'] ?? '',
+      cidade: data['cidade'] ?? '',
+      estado: data['estado'] ?? '',
+      pais: data['pais'] ?? '',
+      dataNascimento: data['dataNascimento'] ?? '',
+    );
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
   }

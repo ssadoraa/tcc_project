@@ -22,7 +22,7 @@ void main() async {
               LoginController()..updateAuthService(context.read<AuthService>()),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }

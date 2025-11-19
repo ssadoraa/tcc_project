@@ -1,4 +1,6 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tcc_project/controller/login_controller.dart';
 import 'package:tcc_project/theme/app_colors.dart';
@@ -14,8 +16,6 @@ class LoginPage extends StatelessWidget {
     final arg = ModalRoute.of(context)!.settings.arguments as bool?;
     if (arg != null) controller.setFormAction(arg);
 
-    controller.clearControllers();
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -29,12 +29,12 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Text('Email', style: TextStyle(fontSize: 13)),
                     SizedBox(height: 6),
                     TextFormField(
                       controller: controller.email,
-                      decoration: _inputDecoration(),
+                      decoration: _inputDecoration(hint: 'Digite seu email'),
                     ),
                     SizedBox(height: 20),
                     Text('Senha', style: TextStyle(fontSize: 13)),
@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                     TextFormField(
                       controller: controller.senha,
                       obscureText: true,
-                      decoration: _inputDecoration(),
+                      decoration: _inputDecoration(hint: 'Digite sua senha'),
                     ),
                     if (!controller.isLogin) ...[
                       SizedBox(height: 20),
@@ -51,46 +51,101 @@ class LoginPage extends StatelessWidget {
                       TextFormField(
                         controller: controller.confirmarSenha,
                         obscureText: true,
-                        decoration: _inputDecoration(),
+                        decoration: _inputDecoration(hint: 'Confirme sua senha'),
                       ),
                       SizedBox(height: 20),
                       Text('Nome completo', style: TextStyle(fontSize: 13)),
                       SizedBox(height: 6),
                       TextFormField(
                         controller: controller.nome,
-                        decoration: _inputDecoration(),
+                        decoration: _inputDecoration(hint: 'Digite seu nome completo'),
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        'Data de nascimento',
-                        style: TextStyle(fontSize: 13),
-                      ),
+                      Text('Data de nascimento', style: TextStyle(fontSize: 13)),
                       SizedBox(height: 6),
                       TextFormField(
                         controller: controller.dataNascimento,
-                        decoration: _inputDecoration(),
+                        readOnly: true,
+                        decoration: _inputDecoration(
+                          hint: 'Selecione sua data de nascimento',
+                          suffixIcon: const Icon(Icons.calendar_month),
+                        ),
+                        onTap: () async {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime(2100),
+                          );
+                          if (pickedDate != null) {
+                            controller.dataNascimento.text =
+                                DateFormat('dd/MM/yyyy').format(pickedDate);
+                          }
+                        },
                       ),
                       SizedBox(height: 20),
                       Text('País', style: TextStyle(fontSize: 13)),
                       SizedBox(height: 6),
                       TextFormField(
                         controller: controller.pais,
-                        decoration: _inputDecoration(),
+                        readOnly: true,
+                        decoration: _inputDecoration(hint: 'Selecione um país'),
+                        onTap: () {
+                          showCountryPicker(
+                            context: context,
+                            onSelect: (country) {
+                              controller.pais.text = country.name;
+
+                              if (country.name == 'Brazil') {
+                                controller.carregarEstados();
+                              } else {
+                                controller.estados = [];
+                                controller.cidades = [];
+                                controller.estadoSelecionado = null;
+                                controller.cidadeSelecionada = null;
+                                controller.notifyListeners();
+                              }
+                            },
+                          );
+                        },
                       ),
-                      SizedBox(height: 20),
-                      Text('Estado', style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 6),
-                      TextFormField(
-                        controller: controller.estado,
-                        decoration: _inputDecoration(),
-                      ),
-                      SizedBox(height: 20),
-                      Text('Cidade', style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 6),
-                      TextFormField(
-                        controller: controller.cidade,
-                        decoration: _inputDecoration(),
-                      ),
+                      if (controller.pais.text == 'Brazil') ...[
+                        SizedBox(height: 20),
+                        Text('Estado', style: TextStyle(fontSize: 13)),
+                        SizedBox(height: 6),
+                        DropdownButtonFormField<int>(
+                          value: controller.estadoSelecionado,
+                          decoration: _inputDecoration(hint: 'Selecione um estado'),
+                          items: controller.estados.map((estado) {
+                            return DropdownMenuItem<int>(
+                              value: estado['id'],
+                              child: Text(estado['sigla']),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            controller.estadoSelecionado = value;
+                            controller.carregarCidades(value);
+                            controller.cidadeSelecionada = null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        Text('Cidade', style: TextStyle(fontSize: 13)),
+                        SizedBox(height: 6),
+                        DropdownButtonFormField<int>(
+                          value: controller.cidadeSelecionada,
+                          decoration: _inputDecoration(hint: 'Selecione uma cidade'),
+                          items: controller.cidades.map((cidade) {
+                            return DropdownMenuItem<int>(
+                              value: cidade['id'],
+                              child: Text(cidade['nome']),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            controller.cidadeSelecionada = value;
+                          },
+                        ),
+                      ],
                     ],
                     SizedBox(height: 40),
                     Center(
@@ -151,7 +206,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  InputDecoration _inputDecoration() {
+  InputDecoration _inputDecoration({String? hint, Widget? suffixIcon}) {
     return InputDecoration(
       filled: true,
       fillColor: AppColors.secondary,
@@ -160,6 +215,9 @@ class LoginPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide.none,
       ),
+      hintText: hint,
+      hintStyle: TextStyle(fontSize: 11),
+      suffixIcon: suffixIcon,
     );
   }
 }
