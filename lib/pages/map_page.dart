@@ -42,7 +42,7 @@ class _MapPageState extends State<MapPage> {
   Future<void> _loadMarkerImage() async {
     final ByteData bytes = await DefaultAssetBundle.of(
       context,
-    ).load('assets/images/pino.png');
+    ).load('assets/images/pessoa-em-pe.png');
     userMarkerImage = bytes.buffer.asUint8List();
   }
 
@@ -91,7 +91,7 @@ class _MapPageState extends State<MapPage> {
         coordinates: mapbox.Position(position.longitude, position.latitude),
       ),
       image: userMarkerImage,
-      iconSize: 0.3,
+      iconSize: 0.26,
     );
 
     if (userMarker == null) {

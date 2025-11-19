@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tcc_project/pages/edit_profile_page.dart';
 import 'package:tcc_project/services/auth_service.dart';
 import 'package:tcc_project/theme/app_colors.dart';
+import 'package:url_launcher/url_launcher_string.dart' as url_launcher;
 
 class ConfigPage extends StatefulWidget {
   ConfigPage({Key? key}) : super(key: key);
@@ -90,8 +91,10 @@ class _ConfigPageState extends State<ConfigPage> {
                           ),
                           content: SingleChildScrollView(
                             child: Text(
-                              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano..."
-                              "\n\n(Seu texto original continua aqui).",
+                              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano, no norte do Rio de Janeiro. Ele foi desenvolvido como parte de um projeto que une tecnologia, turismo e educação ambiental para tornar a visita ao parque mais interativa, divertida e informativa.\n\n"
+                              "Dentro do app, você encontra um mapa com trilhas georreferenciadas, localização em tempo real e pontos marcados com QR Codes espalhados pelo parque. Ao escanear esses códigos, novas figurinhas virtuais e conteúdos educativos sobre a fauna, a flora e curiosidades locais são desbloqueados.\n\n"
+                              "A ideia é transformar a experiência no parque em algo envolvente e acessível, usando elementos de gamificação para incentivar a exploração consciente e o cuidado com o meio ambiente. O DesenGo foi criado para ajudar visitantes, estudantes e moradores a conhecerem melhor o Desengano, valorizando sua história, biodiversidade e importância para a região.",
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         );
@@ -103,29 +106,33 @@ class _ConfigPageState extends State<ConfigPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.facebook,
-                        color: AppColors.background,
-                        size: 45,
-                      ),
-                      onPressed: () {},
+                    InkWell(
+                      onTap: () {
+                        url_launcher.launchUrlString(
+                          'https://www.instagram.com/parqueestadualdodesengano/',
+                        );
+                      },
+                      child: Image.asset('assets/images/instagram.png', width: 40, height: 40)
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.facebook,
-                        color: AppColors.background,
-                        size: 45,
+                        color: const Color.fromARGB(255, 64, 93, 225),
+                        size: 47,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        url_launcher.launchUrlString(
+                          'https://www.facebook.com/ParqueEstadualDoDesengano/?locale=pt_BR',
+                        );
+                      },
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.facebook,
-                        color: AppColors.background,
-                        size: 45,
-                      ),
-                      onPressed: () {},
+                    InkWell(
+                      onTap: () {
+                        url_launcher.launchUrlString(
+                          'https://www.youtube.com/@amigosdoparqueestadualdode6371',
+                        );
+                      },
+                      child: Image.asset('assets/images/youtube.png', width: 40, height: 40)
                     ),
                   ],
                 ),

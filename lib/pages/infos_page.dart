@@ -12,7 +12,18 @@ class InfosPage extends StatefulWidget {
 }
 
 class _InfosPageState extends State<InfosPage> {
-  final List<String> items = ["Contato de Guias", "Eventos do Parque"];
+  final List<Map<String, dynamic>> options = [
+    {
+      "title": "Contato de Guias",
+      "icon": Icons.phone_iphone,
+      "page": GuidesContact(),
+    },
+    {
+      "title": "Eventos do Parque",
+      "icon": Icons.celebration_rounded,
+      "page": Events(),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,68 +31,93 @@ class _InfosPageState extends State<InfosPage> {
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-          ...List.generate(items.length, (index) {
-            return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-              margin: EdgeInsets.symmetric(vertical: 8),
-              child: ListTile(
-                title: Text(items[index]),
-                leading: Icon(Icons.info),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  if (index == 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => GuidesContact()),
-                    );
-                  } else if (index == 1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => Events()),
-                    );
-                  }
-                },
+          ...List.generate(options.length, (index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => options[index]["page"]),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                margin: EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      offset: Offset(0, 4),
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      options[index]["icon"],
+                      size: 30,
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(child: Text(options[index]["title"])),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 18,
+                      color: Colors.black.withOpacity(0.45),
+                    ),
+                  ],
+                ),
               ),
             );
           }),
-
-          SizedBox(height: 50),
-          Card(
-            color: AppColors.secondary,
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: BorderSide(
-                color: Colors.black.withOpacity(0.05),
-                width: 1.2,
-              ),
+          SizedBox(height: 40),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(26),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 18,
+                  offset: Offset(0, 6),
+                ),
+              ],
             ),
-            shadowColor: Colors.black.withOpacity(0.15),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "Curiosidades",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-
-                  SizedBox(height: 16),
-                  PhraseCard(),
-                ],
-              ),
+            child: Column(
+              children: [
+                // HEADER
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _line(),
+                    SizedBox(width: 10),
+                    Text("Curiosidades",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        )),
+                    SizedBox(width: 10),
+                    _line(),
+                  ],
+                ),
+                SizedBox(height: 22),
+                PhraseCard(),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _line() {
+    return Container(
+      height: 2,
+      width: 35,
+      color: Colors.black.withOpacity(0.15),
     );
   }
 }
