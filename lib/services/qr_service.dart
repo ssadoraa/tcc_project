@@ -39,7 +39,7 @@ class QrService {
           .set({"unlockedAt": FieldValue.serverTimestamp()});
 
       return {
-        "msg": "Missão desbloqueada: ${missionDoc["titulo"]}",
+        "msg": "${missionDoc["titulo"]}",
         "isNew": true
       };
     } catch (e) {

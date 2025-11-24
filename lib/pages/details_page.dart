@@ -119,7 +119,7 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detalhes da Missão")),
+      appBar: AppBar(title: Text("Detalhes da Missão", style: TextStyle(fontSize: 18))),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
             .collection('missions')
@@ -189,25 +189,29 @@ class DetailsPage extends StatelessWidget {
                               color: Colors.grey,
                             ),
                             SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  data['localizacao'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    data['localizacao'] ?? '',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    softWrap: true,
                                   ),
-                                ),
-                                Text(
-                                  data['municipio'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
+                                  Text(
+                                    data['municipio'] ?? '',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                    ),
+                                    softWrap: true,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -264,7 +268,7 @@ class DetailsPage extends StatelessWidget {
                 if (data['descricao'] != null)
                   buildSection(
                     "Descrição",
-                    Text(data['descricao_pt'], style: TextStyle(fontSize: 16)),
+                    Text(data['descricao'], style: TextStyle(fontSize: 16)),
                   ),
 
                 if (data['flora_relevante'] != null)

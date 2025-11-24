@@ -21,5 +21,57 @@
     "historico": "Caminho usado por tropeiros para o escoamento das colheitas de café. Há registros de coleta de flora pelo biólogo Joaquim Santos Lima em 1934. A região do Imbé é considerada pelos ornitólogos como uma das áreas mais ricas em avifauna do planeta. Existe uma alta diversidade de aves, inclusive de grande porte.",
     "latitude": -22.9519,
     "longitude": -43.2105
+  },
+  {
+    "qr_code": "PEDTRL01",
+    "titulo": "Trilha da Pedra Dubois",
+    "distancia_km": 2.473,
+    "tempo_estimado": "2h30min",
+    "altitude_inicial": 631,
+    "altitude_maxima": 1232,
+    "altitude_final": 1232,
+    "ganho_altitude": 632,
+    "localizacao": "Final da Rua Doutor Manoel Verbicário / Bairro Itaporanga",
+    "municipio": "Santa Maria Madalena",
+    "descricao": "Trilha fora do limite do parque. Inicia em pasto e segue por mata em regeneração até o cume da Pedra Dubois, de onde é possível avistar belas paisagens, incluindo a cadeia de montanhas que formam o Parque Estadual do Desengano e a região litorânea de Campos e Macaé. A trilha inicia numa estreita passagem à esquerda do portão da Fazenda Dubois, subindo pelo pasto até entrar na mata. No ponto de sela, sobe-se à esquerda em direção ao topo da pedra, passando por um paredão rochoso íngreme e escorregadio quando molhado. Após subir a laje, chega-se ao cume, com vista panorâmica de 360 graus.",
+    "flora_relevante": ["bromélias", "flores"],
+    "infraestrutura": ["nenhuma"],
+    "agua": false,
+    "dificuldade": "Médio",
+    "condicao_trilha": "lajes íngremes e escorregadias quando molhadas",
+    "recomendacao": "evitar dias de chuva devido à alta inclinação e superfície escorregadia",
+    "atrativos": [
+      "mirantes naturais",
+      "vista panorâmica",
+      "paisagens",
+      "cume rochoso"
+    ],
+    "historico": "A trilha recebeu o nome em homenagem ao antigo proprietário da área, o francês Ernesto Dubois. Entre 1933 e 1936, o botânico Joaquim Santos Lima registrou diversas coletas de flora ao longo do percurso até o cume.",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "qr_code": "PEDTRL02",
+    "titulo": "Trilha da Pedra do Desengano",
+    "distancia_km": 3.641,
+    "tempo_estimado": "4h",
+    "altitude_inicial": 1060,
+    "altitude_maxima": 1761,
+    "altitude_final": 1761,
+    "ganho_altitude": 700,
+    "localizacao": "Morumbeca dos Marreiros. Estalagem Morumbeca",
+    "municipio": "Santa Maria Madalena",
+    "descricao": "Travessia bonita e tranquila começando em uma estrada abandonada que se transforma em trilha. Continua descendo por vales com pastos, sítios, riachos e rios, passando pelo interior de uma floresta exuberante com uma cachoeira, belas formações rochosas e paisagens.",
+    "flora_relevante": ["Floresta exuberante", "arbustivas", "bromélias", "orquídeas", "fungos", "liquens", "espécies endêmicas"],
+    "infraestrutura": ["Hospedagem na Estalagem Morumbeca"],
+    "agua": true,
+    "dificuldade": "Difícil",
+    "condicao_trilha": "boa",
+    "recomendacao": "recomendável",
+    "atrativos": ["rios", "riachos", "cachoeira", "poços naturais"],
+    "historico": "Caminho usado por tropeiros para o escoamento das colheitas de café. Há registros de coleta de flora pelo biólogo Joaquim Santos Lima em 1934. A região do Imbé é considerada pelos ornitólogos como uma das áreas mais ricas em avifauna do planeta. Existe uma alta diversidade de aves, inclusive de grande porte.",
+    "latitude": -22.9519,
+    "longitude": -43.2105
   }
+
 ]

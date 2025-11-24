@@ -74,7 +74,7 @@ class _QRScannerPageState extends State<QRScannerPage>
           alignment: Alignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(50),
+              padding: EdgeInsets.all(32),
               decoration: BoxDecoration(
                 color: isNew ? AppColors.background : AppColors.secondary,
                 borderRadius: BorderRadius.circular(16),
@@ -82,27 +82,48 @@ class _QRScannerPageState extends State<QRScannerPage>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 16),
-                  Text(
-                    msg,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  if (isNew) ...[
+                    Text(
+                      "Missão Desbloqueada!!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
+                    SizedBox(height: 12),
+                    Text(
+                      msg,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white70, fontSize: 18),
+                    ),
+                  ] else ...[
+                    Text(
+                      msg,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+
+                  SizedBox(height: 24),
+
                   TextButton(
-                    onPressed: () => {
-                      Navigator.pop(context),
-                      Navigator.pop(context),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: isNew
-                          ? AppColors.primary
-                          : AppColors.primary,
+                      foregroundColor: AppColors.primary,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text("Ok"),
                   ),
@@ -114,16 +135,8 @@ class _QRScannerPageState extends State<QRScannerPage>
                 child: ConfettiWidget(
                   confettiController: _confettiController,
                   blastDirectionality: BlastDirectionality.explosive,
-                  shouldLoop: false,
-                  numberOfParticles: 100,
-                  gravity: 0.3,
-                  colors: [
-                    Colors.red,
-                    Colors.green,
-                    Colors.blue,
-                    Colors.yellow,
-                    Colors.purple,
-                  ],
+                  numberOfParticles: 120,
+                  gravity: 0.25,
                 ),
               ),
           ],
