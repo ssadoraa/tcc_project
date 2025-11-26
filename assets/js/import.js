@@ -31,7 +31,7 @@ async function importarColecao(nomeArquivo, nomeColecao, campoId) {
 async function importarTudo() {
   try {
     await importarColecao("guides", "guides", "cad");
-    await importarColecao("missions", "missions", "qr_code");
+    await importarColecao("attractions", "attractions", "qr_code");
     await importarColecao("infos", "infos", "id");
     console.log("🚀 Importação completa!");
   } catch (err) {

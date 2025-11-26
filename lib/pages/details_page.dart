@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 
 class DetailsPage extends StatelessWidget {
-  final String missionId;
+  final String attractionId;
 
-  DetailsPage({Key? key, required this.missionId}) : super(key: key);
+  DetailsPage({Key? key, required this.attractionId}) : super(key: key);
 
   Widget buildSection(String title, Widget child) {
     return Padding(
@@ -17,7 +17,7 @@ class DetailsPage extends StatelessWidget {
             title,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 6),
+          SizedBox(height: 15),
           child,
         ],
       ),
@@ -119,11 +119,15 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detalhes da Missão", style: TextStyle(fontSize: 18))),
+      appBar: AppBar(
+        title: Text(
+          "Detalhes do Ponto", 
+          style: TextStyle(fontSize: 18)),
+      ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
-            .collection('missions')
-            .doc(missionId)
+            .collection('attractions')
+            .doc(attractionId)
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -185,7 +189,7 @@ class DetailsPage extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.location_on,
-                              size: 20,
+                              size: 25,
                               color: Colors.grey,
                             ),
                             SizedBox(width: 8),
@@ -223,7 +227,7 @@ class DetailsPage extends StatelessWidget {
                 SizedBox(height: 16),
 
                 buildSection(
-                  "Principais",
+                  "Principais Informações",
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -247,7 +251,7 @@ class DetailsPage extends StatelessWidget {
                 ),
 
                 buildSection(
-                  "Detalhes",
+                  "Detalhes de Altitude",
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -266,23 +270,40 @@ class DetailsPage extends StatelessWidget {
                 ),
 
                 if (data['descricao'] != null)
-                  buildSection(
-                    "Descrição",
+                  buildSection("Descrição",
                     Text(data['descricao'], style: TextStyle(fontSize: 16)),
                   ),
 
-                if (data['flora_relevante'] != null)
-                  buildSection(
-                    "Flora relevante",
-                    buildTagRow(data['flora_relevante']),
+                if (data['flora_relevante'] != null || data['atrativos'] != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12.0,
+                      horizontal: 16,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (data['flora_relevante'] != null)
+                          Expanded(
+                            child: 
+                              buildSection("Flora",
+                              buildTagRow(data['flora_relevante']),
+                            ),
+                          ),
+                        SizedBox(width: 16),
+                        if (data['atrativos'] != null)
+                          Expanded(
+                            child: 
+                              buildSection("Atrativos",
+                              buildTagRow(data['atrativos']),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
 
-                if (data['atrativos'] != null)
-                  buildSection("Atrativos", buildTagRow(data['atrativos'])),
-
                 if (data['historico'] != null)
-                  buildSection(
-                    "Histórico",
+                  buildSection("Curiosidade Histórica",
                     Text(data['historico'], style: TextStyle(fontSize: 16)),
                   ),
 

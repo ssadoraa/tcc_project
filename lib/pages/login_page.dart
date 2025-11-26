@@ -51,17 +51,24 @@ class LoginPage extends StatelessWidget {
                       TextFormField(
                         controller: controller.confirmarSenha,
                         obscureText: true,
-                        decoration: _inputDecoration(hint: 'Confirme sua senha'),
+                        decoration: _inputDecoration(
+                          hint: 'Confirme sua senha',
+                        ),
                       ),
                       SizedBox(height: 20),
                       Text('Nome completo', style: TextStyle(fontSize: 13)),
                       SizedBox(height: 6),
                       TextFormField(
                         controller: controller.nome,
-                        decoration: _inputDecoration(hint: 'Digite seu nome completo'),
+                        decoration: _inputDecoration(
+                          hint: 'Digite seu nome completo',
+                        ),
                       ),
                       SizedBox(height: 20),
-                      Text('Data de nascimento', style: TextStyle(fontSize: 13)),
+                      Text(
+                        'Data de nascimento',
+                        style: TextStyle(fontSize: 13),
+                      ),
                       SizedBox(height: 6),
                       TextFormField(
                         controller: controller.dataNascimento,
@@ -79,8 +86,9 @@ class LoginPage extends StatelessWidget {
                             lastDate: DateTime(2100),
                           );
                           if (pickedDate != null) {
-                            controller.dataNascimento.text =
-                                DateFormat('dd/MM/yyyy').format(pickedDate);
+                            controller.dataNascimento.text = DateFormat(
+                              'dd/MM/yyyy',
+                            ).format(pickedDate);
                           }
                         },
                       ),
@@ -116,7 +124,9 @@ class LoginPage extends StatelessWidget {
                         SizedBox(height: 6),
                         DropdownButtonFormField<int>(
                           value: controller.estadoSelecionado,
-                          decoration: _inputDecoration(hint: 'Selecione um estado'),
+                          decoration: _inputDecoration(
+                            hint: 'Selecione um estado',
+                          ),
                           items: controller.estados.map((estado) {
                             return DropdownMenuItem<int>(
                               value: estado['id'],
@@ -134,7 +144,9 @@ class LoginPage extends StatelessWidget {
                         SizedBox(height: 6),
                         DropdownButtonFormField<int>(
                           value: controller.cidadeSelecionada,
-                          decoration: _inputDecoration(hint: 'Selecione uma cidade'),
+                          decoration: _inputDecoration(
+                            hint: 'Selecione uma cidade',
+                          ),
                           items: controller.cidades.map((cidade) {
                             return DropdownMenuItem<int>(
                               value: cidade['id'],
@@ -156,7 +168,7 @@ class LoginPage extends StatelessWidget {
                             backgroundColor: AppColors.secondary,
                             foregroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 14),
                           ),
@@ -180,17 +192,53 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 75),
                     Center(
-                      child: TextButton(
-                        onPressed: () {
+                      child: GestureDetector(
+                        onTap: () {
                           controller.setFormAction(!controller.isLogin);
                         },
-                        child: Text(
-                          controller.toggleButton,
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w500,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary.withOpacity(0.10),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: AppColors.primary,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: controller.isLogin
+                                          ? "Ainda não possui uma conta?\n"
+                                          : "Já tem conta?\n",
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: controller.isLogin
+                                          ? "Cadastre-se"
+                                          : "Entrar",
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: AppColors.secondary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

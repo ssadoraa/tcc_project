@@ -159,11 +159,7 @@ class _ConfigPageState extends State<ConfigPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Alterar Senha"),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Icon(Icons.close, color: Colors.black54),
-              ),
+              Text("Alterar Senha")
             ],
           ),
           content: SizedBox(

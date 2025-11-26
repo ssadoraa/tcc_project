@@ -56,7 +56,7 @@ class _QRScannerPageState extends State<QRScannerPage>
 
     _isProcessing = true;
 
-    final result = await _qrService.unlockMission(userId, codeLido);
+    final result = await _qrService.unlockAttraction(userId, codeLido);
     final String msg = result["msg"];
     final bool isNew = result["isNew"];
 
@@ -84,7 +84,7 @@ class _QRScannerPageState extends State<QRScannerPage>
                 children: [
                   if (isNew) ...[
                     Text(
-                      "Missão Desbloqueada!!",
+                      "Ponto Desbloqueado !!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -125,7 +125,7 @@ class _QRScannerPageState extends State<QRScannerPage>
                         vertical: 12,
                       ),
                     ),
-                    child: Text("Ok"),
+                    child: Text("Voltar"),
                   ),
                 ],
               ),

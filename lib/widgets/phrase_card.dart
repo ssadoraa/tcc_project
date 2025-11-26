@@ -70,6 +70,7 @@ class _PhraseCardState extends State<PhraseCard> {
                     fontWeight: FontWeight.w500,
                   ),
                   speed: Duration(milliseconds: 40),
+                  textAlign: TextAlign.center,
                 ),
               ],
               totalRepeatCount: 1,

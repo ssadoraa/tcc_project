@@ -28,10 +28,9 @@ class LoginController extends ChangeNotifier {
     _authService = authService;
   }
 
-  String get titulo => isLogin ? 'Login' : 'Registro';
+  String get titulo => isLogin ? 'Entrar' : 'Registre-se';
   String get botao => isLogin ? 'Entrar' : 'Registrar';
-  String get toggleButton =>
-      isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Login';
+  String get toggleButton => isLogin ? 'Ainda não possui uma conta? Registre-se' : 'Já tem conta? Login';
 
   void setFormAction(bool login) {
     isLogin = login;

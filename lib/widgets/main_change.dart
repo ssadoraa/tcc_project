@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_project/pages/attractions_page.dart';
 import 'package:tcc_project/pages/config_page.dart';
 import 'package:tcc_project/pages/infos_page.dart';
 import 'package:tcc_project/pages/map_page.dart';
-import 'package:tcc_project/pages/mission_page.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return MapPage();
       case 1:
-        return MissionPage();
+        return AttractionPage();
       case 2:
         return InfosPage();
       case 3:

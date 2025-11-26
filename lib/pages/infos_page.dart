@@ -14,7 +14,7 @@ class InfosPage extends StatefulWidget {
 class _InfosPageState extends State<InfosPage> {
   final List<Map<String, dynamic>> options = [
     {
-      "title": "Contato de Guias",
+      "title": "Contato de Guias do Parque",
       "icon": Icons.phone_iphone,
       "page": GuidesContact(),
     },

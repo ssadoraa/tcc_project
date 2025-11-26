@@ -2,20 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc_project/pages/details_page.dart';
-import 'package:tcc_project/services/mission_service.dart';
+import 'package:tcc_project/services/attraction_service.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 import 'package:tcc_project/widgets/qr_scanner.dart';
 
-class MissionPage extends StatefulWidget {
-  MissionPage({Key? key}) : super(key: key);
+class AttractionPage extends StatefulWidget {
+  AttractionPage({Key? key}) : super(key: key);
 
   @override
-  _MissionPageState createState() => _MissionPageState();
+  _AttractionPageState createState() => _AttractionPageState();
 }
 
-class _MissionPageState extends State<MissionPage> {
+class _AttractionPageState extends State<AttractionPage> {
   final String userId = FirebaseAuth.instance.currentUser!.uid;
-  final MissionService _missionService = MissionService();
+  final AttractionService _attractionservice = AttractionService();
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -36,7 +36,7 @@ class _MissionPageState extends State<MissionPage> {
               controller: _searchController,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                hintText: 'Buscar missão...',
+                hintText: 'Pesquise pelo lugar...',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -49,26 +49,28 @@ class _MissionPageState extends State<MissionPage> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _missionService.getMissions(),
-              builder: (context, missionSnapshot) {
-                if (!missionSnapshot.hasData) {
+              stream: _attractionservice.getattractions(),
+              builder: (context, attractionsnapshot) {
+                if (!attractionsnapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                final missions = missionSnapshot.data!.docs;
+                final attractions = attractionsnapshot.data!.docs;
 
                 return StreamBuilder<Set<String>>(
-                  stream: _missionService.getUnlockedMissions(userId),
+                  stream: _attractionservice.getUnlockedattractions(userId),
                   builder: (context, unlockedSnapshot) {
                     if (!unlockedSnapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
 
                     final unlocked = unlockedSnapshot.data!;
-                    final searchQuery = _searchController.text.toLowerCase().trim();
+                    final searchQuery = _searchController.text
+                        .toLowerCase()
+                        .trim();
 
-                    final filteredMissions = missions.where((mission) {
-                      final data = mission.data() as Map<String, dynamic>;
+                    final filteredAttractions = attractions.where((attraction) {
+                      final data = attraction.data() as Map<String, dynamic>;
                       final title = (data["titulo"] ?? "")
                           .toString()
                           .toLowerCase();
@@ -76,7 +78,7 @@ class _MissionPageState extends State<MissionPage> {
                       return title.contains(searchQuery);
                     }).toList();
 
-                    final total = missions.length;
+                    final total = attractions.length;
                     final unlockedCount = unlocked.length;
                     final progress = total > 0 ? unlockedCount / total : 0.0;
 
@@ -85,16 +87,16 @@ class _MissionPageState extends State<MissionPage> {
                         _buildProgressBar(progress, unlockedCount, total),
 
                         Expanded(
-                          child: filteredMissions.isEmpty
+                          child: filteredAttractions.isEmpty
                               ? Center(
                                   child: Text(
-                                    'Nenhuma missão encontrada.',
+                                    'Nenhum ponto encontrado.',
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                 )
-                              : _buildMissionGrid(
+                              : _buildattractionGrid(
                                   context,
-                                  filteredMissions,
+                                  filteredAttractions,
                                   unlocked,
                                 ),
                         ),
@@ -108,15 +110,20 @@ class _MissionPageState extends State<MissionPage> {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => QRScannerPage()),
-          );
-        },
-        backgroundColor: AppColors.secondary,
-        child: Icon(Icons.qr_code_scanner),
+      floatingActionButton: SizedBox(
+        height: 65,
+        width: 65,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => QRScannerPage()),
+            );
+          },
+          shape: CircleBorder(),
+          backgroundColor: AppColors.secondary,
+          child: Icon(Icons.qr_code_scanner, size: 28),
+        ),
       ),
     );
   }
@@ -145,7 +152,7 @@ class _MissionPageState extends State<MissionPage> {
             alignment: Alignment.bottomRight,
             child: Text(
               '$unlocked/$total',
-              style: TextStyle(fontSize: 10),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -153,39 +160,36 @@ class _MissionPageState extends State<MissionPage> {
     );
   }
 
-  Widget _buildMissionGrid(
+  Widget _buildattractionGrid(
     BuildContext context,
-    List<QueryDocumentSnapshot> missions,
+    List<QueryDocumentSnapshot> attractions,
     Set<String> unlocked,
   ) {
     return GridView.builder(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount:
-            (MediaQuery.of(context).size.width / 150).floor().clamp(2, 6),
+        crossAxisCount: (MediaQuery.of(context).size.width / 150).floor().clamp(
+          2,
+          6,
+        ),
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 1,
       ),
-      itemCount: missions.length,
+      itemCount: attractions.length,
       itemBuilder: (context, index) {
-        final mission = missions[index];
-        final data = mission.data() as Map<String, dynamic>;
-        final isUnlocked = unlocked.contains(mission.id);
+        final attraction = attractions[index];
+        final data = attraction.data() as Map<String, dynamic>;
+        final isUnlocked = unlocked.contains(attraction.id);
 
-        return _buildMissionCard(
-          context,
-          mission.id,
-          data,
-          isUnlocked,
-        );
+        return _buildattractionCard(context, attraction.id, data, isUnlocked);
       },
     );
   }
 
-  Widget _buildMissionCard(
+  Widget _buildattractionCard(
     BuildContext context,
-    String missionId,
+    String attractionId,
     Map<String, dynamic> data,
     bool isUnlocked,
   ) {
@@ -196,7 +200,7 @@ class _MissionPageState extends State<MissionPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailsPage(missionId: missionId),
+                  builder: (context) => DetailsPage(attractionId: attractionId),
                 ),
               );
             }
@@ -219,8 +223,7 @@ class _MissionPageState extends State<MissionPage> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       color: isUnlocked ? null : Colors.black.withOpacity(0.5),
-                      colorBlendMode:
-                          isUnlocked ? null : BlendMode.darken,
+                      colorBlendMode: isUnlocked ? null : BlendMode.darken,
                     ),
                   ),
                 ),
@@ -247,9 +250,7 @@ class _MissionPageState extends State<MissionPage> {
             ),
 
             if (!isUnlocked)
-              Center(
-                child: Icon(Icons.lock, size: 40, color: Colors.white),
-              ),
+              Center(child: Icon(Icons.lock, size: 40, color: Colors.white)),
           ],
         ),
       ),
