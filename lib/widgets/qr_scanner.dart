@@ -32,9 +32,7 @@ class _QRScannerPageState extends State<QRScannerPage>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    _confettiController = ConfettiController(
-      duration: const Duration(seconds: 5),
-    );
+    _confettiController = ConfettiController(duration: Duration(seconds: 5));
   }
 
   @override
@@ -76,7 +74,7 @@ class _QRScannerPageState extends State<QRScannerPage>
             Container(
               padding: EdgeInsets.all(32),
               decoration: BoxDecoration(
-                color: isNew ? AppColors.background : AppColors.secondary,
+                color: isNew ? AppColors.primary : AppColors.secondary,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -87,7 +85,7 @@ class _QRScannerPageState extends State<QRScannerPage>
                       "Ponto Desbloqueado !!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 26,
                       ),
@@ -96,36 +94,37 @@ class _QRScannerPageState extends State<QRScannerPage>
                     Text(
                       msg,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70, fontSize: 18),
+                      style: TextStyle(color: AppColors.white, fontSize: 18),
                     ),
                   ] else ...[
                     Text(
                       msg,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     ),
                   ],
-
                   SizedBox(height: 24),
-
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
+                      backgroundColor: AppColors.background,
+                      foregroundColor: AppColors.primaryStrong,
                       padding: EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,
                       ),
                     ),
-                    child: Text("Voltar"),
+                    child: Text(
+                      "Voltar",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
@@ -137,6 +136,11 @@ class _QRScannerPageState extends State<QRScannerPage>
                   blastDirectionality: BlastDirectionality.explosive,
                   numberOfParticles: 120,
                   gravity: 0.25,
+                  colors: [
+                    AppColors.primary,
+                    AppColors.lightGreen,
+                    AppColors.lightOrange,
+                  ],
                 ),
               ),
           ],
@@ -151,12 +155,17 @@ class _QRScannerPageState extends State<QRScannerPage>
     double scanBoxSize = 250.0;
 
     return Scaffold(
+      backgroundColor: AppColors.black,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(65.0),
         child: AppBar(
+          iconTheme: IconThemeData(color: AppColors.textThird),
           title: Padding(
             padding: EdgeInsets.only(top: 13.0),
-            child: Text('Escanear QR Code', style: TextStyle(fontSize: 20)),
+            child: Text(
+              'Escanear QR Code',
+              style: TextStyle(fontSize: 20, color: AppColors.textThird),
+            ),
           ),
           backgroundColor: AppColors.secondary,
         ),
@@ -165,16 +174,16 @@ class _QRScannerPageState extends State<QRScannerPage>
         children: [
           MobileScanner(controller: _cameraController, onDetect: qrRead),
           LayoutBuilder(
-            builder: (context, raints) {
-              final width = raints.maxWidth;
-              final height = raints.maxHeight;
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              final height = constraints.maxHeight;
 
               return Stack(
                 children: [
                   Container(
                     width: width,
                     height: height,
-                    color: Colors.black.withOpacity(0.5),
+                    color: AppColors.black.withOpacity(0.5),
                   ),
                   Positioned(
                     top: (height - scanBoxSize) / 2,
@@ -184,7 +193,7 @@ class _QRScannerPageState extends State<QRScannerPage>
                       height: scanBoxSize,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        border: Border.all(color: Colors.grey, width: 4),
+                        border: Border.all(color: AppColors.black, width: 4),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: AnimatedBuilder(
@@ -198,7 +207,7 @@ class _QRScannerPageState extends State<QRScannerPage>
                                 right: 0,
                                 child: Container(
                                   height: 3,
-                                  color: Colors.green,
+                                  color: AppColors.lightGreen,
                                 ),
                               ),
                             ],

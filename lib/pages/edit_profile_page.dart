@@ -37,14 +37,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (usuario.pais == 'Brazil') {
       await controller.carregarEstados();
       final estado = controller.estados.firstWhere(
-          (e) => e['sigla'] == usuario.estado,
-          orElse: () => {});
+        (e) => e['sigla'] == usuario.estado,
+        orElse: () => {},
+      );
       if (estado.isNotEmpty) {
         controller.estadoSelecionado = estado['id'];
         await controller.carregarCidades(estado['id']);
+
         final cidade = controller.cidades.firstWhere(
-            (c) => c['nome'] == usuario.cidade,
-            orElse: () => {});
+          (c) => c['nome'] == usuario.cidade,
+          orElse: () => {},
+        );
         if (cidade.isNotEmpty) controller.cidadeSelecionada = cidade['id'];
       }
     }
@@ -52,14 +55,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() => isLoading = false);
   }
 
-  InputDecoration _inputDecoration() {
+  InputDecoration _inputDecoration({String? hint, Widget? suffixIcon}) {
     return InputDecoration(
       filled: true,
-      fillColor: AppColors.secondary,
-      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      fillColor: AppColors.lightOrangeOpacity,
+      hintText: hint,
+      hintStyle: TextStyle(color: AppColors.textSecondary),
+      suffixIcon: suffixIcon,
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
+      ),
+    );
+  }
+
+  Widget _label(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
@@ -81,43 +98,60 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Nome completo', style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 6),
+                        _label("Nome completo"),
                         TextFormField(
                           controller: controller.nome,
+                          style: TextStyle(color: AppColors.textPrimary),
                           decoration: _inputDecoration(),
                         ),
                         SizedBox(height: 20),
-                        Text('Data de nascimento', style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 6),
+
+                        _label("Data de nascimento"),
                         TextFormField(
                           controller: controller.dataNascimento,
                           readOnly: true,
-                          decoration: _inputDecoration().copyWith(
-                            suffixIcon: const Icon(Icons.calendar_month),
+                          style: TextStyle(color: AppColors.textPrimary),
+                          decoration: _inputDecoration(
+                            suffixIcon: Icon(
+                              Icons.calendar_month,
+                              color: AppColors.primary,
+                            ),
                           ),
                           onTap: () async {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            DateTime? pickedDate = await showDatePicker(
+                            final pickedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(1900),
                               lastDate: DateTime(2100),
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: AppColors.primary,
+                                      onPrimary: AppColors.background,
+                                      onSurface: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  child: child!,
+                                );
+                              },
                             );
                             if (pickedDate != null) {
-                              controller.dataNascimento.text =
-                                  DateFormat('dd/MM/yyyy').format(pickedDate);
+                              controller.dataNascimento.text = DateFormat(
+                                'dd/MM/yyyy',
+                              ).format(pickedDate);
                             }
                           },
                         ),
                         SizedBox(height: 20),
-                        Text('País', style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 6),
+
+                        _label("País"),
                         TextFormField(
                           controller: controller.pais,
                           readOnly: true,
-                          decoration: _inputDecoration().copyWith(
-                            hintText: "Selecione um país",
+                          style: TextStyle(color: AppColors.textPrimary),
+                          decoration: _inputDecoration(
+                            hint: "Selecione um país",
                           ),
                           onTap: () {
                             showCountryPicker(
@@ -137,17 +171,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             );
                           },
                         ),
+                        SizedBox(height: 20),
+
                         if (controller.pais.text == 'Brazil') ...[
-                          SizedBox(height: 20),
-                          Text('Estado', style: TextStyle(fontSize: 13)),
-                          SizedBox(height: 6),
+                          _label("Estado"),
                           DropdownButtonFormField<int>(
                             value: controller.estadoSelecionado,
                             decoration: _inputDecoration(),
+                            dropdownColor: AppColors.lightOrangeOpacity,
                             items: controller.estados.map((estado) {
                               return DropdownMenuItem<int>(
                                 value: estado['id'],
-                                child: Text(estado['sigla']),
+                                child: Text(
+                                  estado['sigla'],
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
                               );
                             }).toList(),
                             onChanged: (value) async {
@@ -157,15 +197,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             },
                           ),
                           SizedBox(height: 20),
-                          Text('Cidade', style: TextStyle(fontSize: 13)),
-                          SizedBox(height: 6),
+
+                          _label("Cidade"),
                           DropdownButtonFormField<int>(
                             value: controller.cidadeSelecionada,
                             decoration: _inputDecoration(),
+                            dropdownColor: AppColors.lightOrangeOpacity,
                             items: controller.cidades.map((cidade) {
                               return DropdownMenuItem<int>(
                                 value: cidade['id'],
-                                child: Text(cidade['nome']),
+                                child: Text(
+                                  cidade['nome'],
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -174,56 +220,62 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                         ],
                         SizedBox(height: 40),
-                        Center(
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.background,
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              onPressed: () async {
-                                final usuarioAtualizado = Usuario(
-                                  id: FirebaseAuth.instance.currentUser!.uid,
-                                  nome: controller.nome.text,
-                                  pais: controller.pais.text,
-                                  estado: controller.estadoSelecionado != null
-                                      ? controller.estados
-                                          .firstWhere((e) =>
-                                              e['id'] ==
-                                              controller.estadoSelecionado)['sigla']
-                                      : '',
-                                  cidade: controller.cidadeSelecionada != null
-                                      ? controller.cidades
-                                          .firstWhere((c) =>
-                                              c['id'] ==
-                                              controller.cidadeSelecionada)['nome']
-                                      : '',
-                                  dataNascimento: controller.dataNascimento.text,
+                            ),
+                            onPressed: () async {
+                              final usuarioAtualizado = Usuario(
+                                id: FirebaseAuth.instance.currentUser!.uid,
+                                nome: controller.nome.text,
+                                pais: controller.pais.text,
+                                estado: controller.estadoSelecionado != null
+                                    ? controller.estados.firstWhere(
+                                        (e) =>
+                                            e['id'] ==
+                                            controller.estadoSelecionado,
+                                      )['sigla']
+                                    : '',
+                                cidade: controller.cidadeSelecionada != null
+                                    ? controller.cidades.firstWhere(
+                                        (c) =>
+                                            c['id'] ==
+                                            controller.cidadeSelecionada,
+                                      )['nome']
+                                    : '',
+                                dataNascimento: controller.dataNascimento.text,
+                              );
+                              try {
+                                await context
+                                    .read<AuthService>()
+                                    .updateUserProfile(usuarioAtualizado);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Perfil atualizado!"),
+                                    backgroundColor: AppColors.primary,
+                                  ),
                                 );
-
-                                try {
-                                  await context
-                                      .read<AuthService>()
-                                      .updateUserProfile(usuarioAtualizado);
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Perfil atualizado!")),
-                                  );
-
-                                  Navigator.pop(context);
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
-                                }
-                              },
-                              child: Text("Salvar Alterações",
-                                  style: TextStyle(fontSize: 16)),
+                                Navigator.pop(context);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.toString()),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(
+                              "Salvar Alterações",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

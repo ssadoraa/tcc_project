@@ -26,31 +26,27 @@ class _ConfigPageState extends State<ConfigPage> {
           children: [
             _buildSectionCard(
               title: "Conta",
+              color: AppColors.lightOrangeOpacity,
               children: [
                 _buildOptionTile(
                   icon: Icons.person,
                   title: "Editar perfil",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfilePage(),
-                      ),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                  ),
                 ),
                 _buildOptionTile(
                   icon: Icons.lock,
                   title: "Alterar senha",
-                  onTap: () {
-                    _showChangePasswordDialog(context);
-                  },
+                  onTap: () => _showChangePasswordDialog(context),
                 ),
               ],
             ),
             SizedBox(height: 16),
             _buildSectionCard(
               title: "Preferências",
+              color: AppColors.lightGreen.withOpacity(0.8),
               children: [
                 _buildSwitchTile(
                   icon: Icons.dark_mode,
@@ -69,70 +65,34 @@ class _ConfigPageState extends State<ConfigPage> {
             SizedBox(height: 16),
             _buildSectionCard(
               title: "Sobre",
+              color: AppColors.lightOrangeOpacity,
               children: [
                 _buildOptionTile(
                   icon: Icons.info_outline,
                   title: "Sobre o app",
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Sobre o App"),
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Icon(Icons.close, color: Colors.black54),
-                              ),
-                            ],
-                          ),
-                          content: SingleChildScrollView(
-                            child: Text(
-                              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano, no norte do Rio de Janeiro. Ele foi desenvolvido como parte de um projeto que une tecnologia, turismo e educação ambiental para tornar a visita ao parque mais interativa, divertida e informativa.\n\n"
-                              "Dentro do app, você encontra um mapa com trilhas georreferenciadas, localização em tempo real e pontos marcados com QR Codes espalhados pelo parque. Ao escanear esses códigos, novas figurinhas virtuais e conteúdos educativos sobre a fauna, a flora e curiosidades locais são desbloqueados.\n\n"
-                              "A ideia é transformar a experiência no parque em algo envolvente e acessível, usando elementos de gamificação para incentivar a exploração consciente e o cuidado com o meio ambiente. O DesenGo foi criado para ajudar visitantes, estudantes e moradores a conhecerem melhor o Desengano, valorizando sua história, biodiversidade e importância para a região.",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  onTap: () => _showAboutDialog(context),
                 ),
                 SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        url_launcher.launchUrlString(
-                          'https://www.instagram.com/parqueestadualdodesengano/',
-                        );
-                      },
-                      child: Image.asset('assets/images/instagram.png', width: 40, height: 40)
+                    _socialIcon(
+                      'assets/images/instagram.png',
+                      'https://www.instagram.com/parqueestadualdodesengano/',
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.facebook,
-                        color: const Color.fromARGB(255, 64, 93, 225),
-                        size: 47,
+                        color: Colors.blueAccent,
+                        size: 40,
                       ),
-                      onPressed: () {
-                        url_launcher.launchUrlString(
-                          'https://www.facebook.com/ParqueEstadualDoDesengano/?locale=pt_BR',
-                        );
-                      },
+                      onPressed: () => url_launcher.launchUrlString(
+                        'https://www.facebook.com/ParqueEstadualDoDesengano/?locale=pt_BR',
+                      ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        url_launcher.launchUrlString(
-                          'https://www.youtube.com/@amigosdoparqueestadualdode6371',
-                        );
-                      },
-                      child: Image.asset('assets/images/youtube.png', width: 40, height: 40)
+                    _socialIcon(
+                      'assets/images/youtube.png',
+                      'https://www.youtube.com/@amigosdoparqueestadualdode6371',
                     ),
                   ],
                 ),
@@ -147,48 +107,30 @@ class _ConfigPageState extends State<ConfigPage> {
   }
 
   void _showChangePasswordDialog(BuildContext context) {
-    final TextEditingController atualController = TextEditingController();
-    final TextEditingController novaController = TextEditingController();
-    final TextEditingController confirmarController = TextEditingController();
+    final atualController = TextEditingController();
+    final novaController = TextEditingController();
+    final confirmarController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 24),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Alterar Senha")
-            ],
-          ),
+          title: Text("Alterar Senha"),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.25,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: atualController,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: "Senha atual"),
-                  ),
-                  SizedBox(height: 12),
-                  TextField(
-                    controller: novaController,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: "Nova senha"),
-                  ),
-                  SizedBox(height: 12),
-                  TextField(
-                    controller: confirmarController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: "Confirmar nova senha",
-                    ),
-                  ),
-                ],
-              ),
+            child: Column(
+              children: [
+                _buildPasswordField("Senha atual", atualController),
+                SizedBox(height: 12),
+                _buildPasswordField("Nova senha", novaController),
+                SizedBox(height: 12),
+                _buildPasswordField(
+                  "Confirmar nova senha",
+                  confirmarController,
+                ),
+              ],
             ),
           ),
           actions: [
@@ -214,7 +156,9 @@ class _ConfigPageState extends State<ConfigPage> {
                   Navigator.pop(context);
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Senha alterada com sucesso!")),
+                    SnackBar(
+                      content: Text("Senha alterada com sucesso!"),
+                    ),
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(
@@ -230,19 +174,49 @@ class _ConfigPageState extends State<ConfigPage> {
     );
   }
 
+  void _showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Sobre o App"),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(Icons.close, color: AppColors.textSecondary),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano, no norte do Rio de Janeiro..."
+              "\n\nDentro do app, você encontra um mapa com trilhas georreferenciadas, localização em tempo real e pontos marcados com QR Codes..."
+              "\n\nA ideia é transformar a experiência no parque em algo envolvente e acessível, usando elementos de gamificação...",
+              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildSectionCard({
     required String title,
     required List<Widget> children,
+    Color? color,
   }) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.secondary,
+        color: color ?? AppColors.lightGreen,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppColors.textPrimary.withOpacity(0.1),
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -258,7 +232,7 @@ class _ConfigPageState extends State<ConfigPage> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: AppColors.primary,
+                color: AppColors.primaryStrong,
               ),
             ),
           ),
@@ -277,10 +251,14 @@ class _ConfigPageState extends State<ConfigPage> {
       contentPadding: EdgeInsets.symmetric(horizontal: 8),
       leading: CircleAvatar(
         backgroundColor: AppColors.background,
-        child: Icon(icon, color: AppColors.primary),
+        child: Icon(icon, color: AppColors.primaryStrong),
       ),
-      title: Text(title, style: TextStyle(color: AppColors.primary)),
-      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+      title: Text(title, style: TextStyle(color: AppColors.textPrimary)),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: AppColors.textSecondary,
+      ),
       onTap: onTap,
     );
   }
@@ -294,11 +272,11 @@ class _ConfigPageState extends State<ConfigPage> {
     return SwitchListTile(
       secondary: CircleAvatar(
         backgroundColor: AppColors.background,
-        child: Icon(icon, color: AppColors.primary),
+        child: Icon(icon, color: AppColors.secondaryStrong),
       ),
-      title: Text(title, style: TextStyle(color: AppColors.primary)),
+      title: Text(title, style: TextStyle(color: AppColors.textPrimary)),
       value: value,
-      activeColor: AppColors.primary,
+      activeColor: AppColors.primaryStrong,
       onChanged: onChanged,
     );
   }
@@ -310,8 +288,8 @@ class _ConfigPageState extends State<ConfigPage> {
         icon: Icon(Icons.logout),
         label: Text("Sair da conta"),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red.shade700,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primaryStrong,
+          foregroundColor: AppColors.background,
           minimumSize: Size(double.infinity, 48),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -340,6 +318,21 @@ class _ConfigPageState extends State<ConfigPage> {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildPasswordField(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      obscureText: true,
+      decoration: InputDecoration(labelText: label),
+    );
+  }
+
+  Widget _socialIcon(String assetPath, String url) {
+    return InkWell(
+      onTap: () => url_launcher.launchUrlString(url),
+      child: Image.asset(assetPath, width: 40, height: 40),
     );
   }
 }

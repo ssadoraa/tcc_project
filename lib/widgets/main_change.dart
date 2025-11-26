@@ -37,30 +37,44 @@ class _HomePageState extends State<HomePage> {
         preferredSize: Size.fromHeight(85.0),
         child: AppBar(
           title: Padding(
-            padding: const EdgeInsets.only(top: 22.0),
+            padding: EdgeInsets.only(top: 22.0),
             child: Text(
               'DesenGo',
-              style: TextStyle(fontSize: 22),
+              style: TextStyle(
+                fontSize: 23,
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          backgroundColor: AppColors.secondary,
+          backgroundColor: AppColors.secondaryStrong,
+          elevation: 4,
         ),
       ),
       body: _getPage(itemSelecionado),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: itemSelecionado,
         type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt_rounded), label: 'Missões'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Infos'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Config'),
-        ],
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         onTap: (index) {
           setState(() {
             itemSelecionado = index;
           });
         },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_rounded),
+            label: 'Missões',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'Infos',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Config'),
+        ],
       ),
     );
   }

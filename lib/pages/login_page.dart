@@ -29,53 +29,52 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
-                    Text('Email', style: TextStyle(fontSize: 13)),
-                    SizedBox(height: 6),
+                    _label("Email"),
                     TextFormField(
                       controller: controller.email,
+                      style: TextStyle(color: AppColors.textPrimary),
                       decoration: _inputDecoration(hint: 'Digite seu email'),
                     ),
                     SizedBox(height: 20),
-                    Text('Senha', style: TextStyle(fontSize: 13)),
-                    SizedBox(height: 6),
+                    _label("Senha"),
                     TextFormField(
                       controller: controller.senha,
                       obscureText: true,
+                      style: TextStyle(color: AppColors.textPrimary),
                       decoration: _inputDecoration(hint: 'Digite sua senha'),
                     ),
                     if (!controller.isLogin) ...[
                       SizedBox(height: 20),
-                      Text('Confirmar senha', style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 6),
+                      _label("Confirmar senha"),
                       TextFormField(
                         controller: controller.confirmarSenha,
                         obscureText: true,
+                        style: TextStyle(color: AppColors.textPrimary),
                         decoration: _inputDecoration(
                           hint: 'Confirme sua senha',
                         ),
                       ),
                       SizedBox(height: 20),
-                      Text('Nome completo', style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 6),
+                      _label("Nome completo"),
                       TextFormField(
                         controller: controller.nome,
+                        style: TextStyle(color: AppColors.textPrimary),
                         decoration: _inputDecoration(
                           hint: 'Digite seu nome completo',
                         ),
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        'Data de nascimento',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      SizedBox(height: 6),
+                      _label("Data de nascimento"),
                       TextFormField(
                         controller: controller.dataNascimento,
                         readOnly: true,
+                        style: TextStyle(color: AppColors.textPrimary),
                         decoration: _inputDecoration(
                           hint: 'Selecione sua data de nascimento',
-                          suffixIcon: const Icon(Icons.calendar_month),
+                          suffixIcon: Icon(
+                            Icons.calendar_month,
+                            color: AppColors.lightGreen,
+                          ),
                         ),
                         onTap: () async {
                           FocusScope.of(context).requestFocus(FocusNode());
@@ -93,18 +92,17 @@ class LoginPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('País', style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 6),
+                      _label("País"),
                       TextFormField(
                         controller: controller.pais,
                         readOnly: true,
+                        style: TextStyle(color: AppColors.textPrimary),
                         decoration: _inputDecoration(hint: 'Selecione um país'),
                         onTap: () {
                           showCountryPicker(
                             context: context,
                             onSelect: (country) {
                               controller.pais.text = country.name;
-
                               if (country.name == 'Brazil') {
                                 controller.carregarEstados();
                               } else {
@@ -120,17 +118,21 @@ class LoginPage extends StatelessWidget {
                       ),
                       if (controller.pais.text == 'Brazil') ...[
                         SizedBox(height: 20),
-                        Text('Estado', style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 6),
+                        _label("Estado"),
                         DropdownButtonFormField<int>(
                           value: controller.estadoSelecionado,
+                          dropdownColor: AppColors.lightOrangeOpacity
+                              .withOpacity(0.3),
                           decoration: _inputDecoration(
                             hint: 'Selecione um estado',
                           ),
                           items: controller.estados.map((estado) {
                             return DropdownMenuItem<int>(
                               value: estado['id'],
-                              child: Text(estado['sigla']),
+                              child: Text(
+                                estado['sigla'],
+                                style: TextStyle(color: AppColors.textPrimary),
+                              ),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -140,17 +142,21 @@ class LoginPage extends StatelessWidget {
                           },
                         ),
                         SizedBox(height: 20),
-                        Text('Cidade', style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 6),
+                        _label("Cidade"),
                         DropdownButtonFormField<int>(
                           value: controller.cidadeSelecionada,
+                          dropdownColor: AppColors.lightOrangeOpacity
+                              .withOpacity(0.3),
                           decoration: _inputDecoration(
                             hint: 'Selecione uma cidade',
                           ),
                           items: controller.cidades.map((cidade) {
                             return DropdownMenuItem<int>(
                               value: cidade['id'],
-                              child: Text(cidade['nome']),
+                              child: Text(
+                                cidade['nome'],
+                                style: TextStyle(color: AppColors.textPrimary),
+                              ),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -160,36 +166,36 @@ class LoginPage extends StatelessWidget {
                       ],
                     ],
                     SizedBox(height: 40),
-                    Center(
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
-                            foregroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 14),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.background,
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          onPressed: () {
-                            if (controller.formKey.currentState!.validate()) {
-                              controller.isLogin
-                                  ? controller.login(context)
-                                  : controller.register(context);
-                            }
-                          },
-                          child: controller.loading
-                              ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.primary,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Text(controller.botao),
+                          shadowColor: AppColors.primary.withOpacity(0.3),
+                          elevation: 4,
                         ),
+                        onPressed: () {
+                          if (controller.formKey.currentState!.validate()) {
+                            controller.isLogin
+                                ? controller.login(context)
+                                : controller.register(context);
+                          }
+                        },
+                        child: controller.loading
+                            ? SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.background,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(controller.botao),
                       ),
                     ),
                     SizedBox(height: 75),
@@ -204,41 +210,33 @@ class LoginPage extends StatelessWidget {
                             vertical: 14,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withOpacity(0.10),
+                            color: AppColors.secondary.withOpacity(0.25),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: AppColors.primary,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: controller.isLogin
-                                          ? "Ainda não possui uma conta?\n"
-                                          : "Já tem conta?\n",
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: controller.isLogin
-                                          ? "Cadastre-se"
-                                          : "Entrar",
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: AppColors.secondary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: AppColors.textPrimary,
                               ),
-                            ],
+                              children: [
+                                TextSpan(
+                                  text: controller.isLogin
+                                      ? "Ainda não possui uma conta?\n"
+                                      : "Já tem conta?\n",
+                                ),
+                                TextSpan(
+                                  text: controller.isLogin
+                                      ? "Cadastre-se"
+                                      : "Entrar",
+                                  style: TextStyle(
+                                    color: AppColors.lightGreen,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -254,17 +252,31 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  Widget _label(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        color: AppColors.textPrimary,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
   InputDecoration _inputDecoration({String? hint, Widget? suffixIcon}) {
     return InputDecoration(
       filled: true,
-      fillColor: AppColors.secondary,
+      fillColor: AppColors.lightOrangeOpacity.withOpacity(0.3),
+      hintText: hint,
+      hintStyle: TextStyle(
+        color: AppColors.textSecondary.withOpacity(0.8),
+        fontSize: 11,
+      ),
       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide.none,
       ),
-      hintText: hint,
-      hintStyle: TextStyle(fontSize: 11),
       suffixIcon: suffixIcon,
     );
   }

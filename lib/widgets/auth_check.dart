@@ -5,7 +5,7 @@ import 'package:tcc_project/pages/login_page.dart';
 import 'package:tcc_project/services/auth_service.dart';
 
 class AuthCheck extends StatelessWidget {
-  const AuthCheck({Key? key}) : super(key: key);
+  AuthCheck({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

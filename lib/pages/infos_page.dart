@@ -17,70 +17,104 @@ class _InfosPageState extends State<InfosPage> {
       "title": "Contato de Guias do Parque",
       "icon": Icons.phone_iphone,
       "page": GuidesContact(),
+      "color": AppColors.lightGreen,
     },
     {
       "title": "Eventos do Parque",
       "icon": Icons.celebration_rounded,
       "page": Events(),
+      "color": AppColors.lightOrangeOpacity,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-          ...List.generate(options.length, (index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => options[index]["page"]),
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                margin: EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      offset: Offset(0, 4),
-                      blurRadius: 12,
-                    ),
-                  ],
+          GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: (MediaQuery.of(context).size.width / 180)
+                  .floor()
+                  .clamp(1, 2),
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.2,
+            ),
+            itemCount: options.length,
+            itemBuilder: (context, index) {
+              final option = options[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => option["page"]),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.textPrimary.withOpacity(0.15),
+                        offset: Offset(0, 6),
+                        blurRadius: 12,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: AppColors.white,
+                        child: Icon(
+                          option["icon"],
+                          size: 32,
+                          color: AppColors.primaryStrong,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          option["title"],
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(
-                      options[index]["icon"],
-                      size: 30,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(child: Text(options[index]["title"])),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 18,
-                      color: Colors.black.withOpacity(0.45),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-          SizedBox(height: 40),
+              );
+            },
+          ),
+          SizedBox(height: 32),
+
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 28),
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.secondary.withOpacity(0.8),
+                  AppColors.secondary,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(26),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.10),
+                  color: AppColors.textPrimary.withOpacity(0.12),
                   blurRadius: 18,
                   offset: Offset(0, 6),
                 ),
@@ -88,17 +122,19 @@ class _InfosPageState extends State<InfosPage> {
             ),
             child: Column(
               children: [
-                // HEADER
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _line(),
                     SizedBox(width: 10),
-                    Text("Curiosidades",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        )),
+                    Text(
+                      "Curiosidades",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
                     SizedBox(width: 10),
                     _line(),
                   ],
@@ -117,7 +153,10 @@ class _InfosPageState extends State<InfosPage> {
     return Container(
       height: 2,
       width: 35,
-      color: Colors.black.withOpacity(0.15),
+      decoration: BoxDecoration(
+        color: AppColors.primaryStrong,
+        borderRadius: BorderRadius.circular(1),
+      ),
     );
   }
 }

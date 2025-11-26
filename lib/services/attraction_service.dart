@@ -10,11 +10,11 @@ class AttractionService {
     return _firestore.collection('attractions').orderBy('titulo').snapshots();
   }
 
-  Stream<Set<String>> getUnlockedattractions(String userId) {
+  Stream<Set<String>> getunlockedAttractions(String userId) {
     return _firestore
         .collection('users')
         .doc(userId)
-        .collection('unlockedattractions')
+        .collection('unlockedAttractions')
         .snapshots()
         .map((snapshot) => snapshot.docs.map((d) => d.id).toSet());
   }

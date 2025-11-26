@@ -27,6 +27,7 @@ class _AttractionPageState extends State<AttractionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: Column(
         children: [
           SizedBox(height: 15),
@@ -37,13 +38,14 @@ class _AttractionPageState extends State<AttractionPage> {
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Pesquise pelo lugar...',
-                prefixIcon: Icon(Icons.search),
+                hintStyle: TextStyle(color: AppColors.textSecondary),
+                prefixIcon: Icon(Icons.search, color: AppColors.primary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: AppColors.secondary,
+                fillColor: AppColors.lightOrangeOpacity,
               ),
             ),
           ),
@@ -58,7 +60,7 @@ class _AttractionPageState extends State<AttractionPage> {
                 final attractions = attractionsnapshot.data!.docs;
 
                 return StreamBuilder<Set<String>>(
-                  stream: _attractionservice.getUnlockedattractions(userId),
+                  stream: _attractionservice.getunlockedAttractions(userId),
                   builder: (context, unlockedSnapshot) {
                     if (!unlockedSnapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
@@ -74,7 +76,6 @@ class _AttractionPageState extends State<AttractionPage> {
                       final title = (data["titulo"] ?? "")
                           .toString()
                           .toLowerCase();
-
                       return title.contains(searchQuery);
                     }).toList();
 
@@ -85,16 +86,17 @@ class _AttractionPageState extends State<AttractionPage> {
                     return Column(
                       children: [
                         _buildProgressBar(progress, unlockedCount, total),
-
                         Expanded(
                           child: filteredAttractions.isEmpty
                               ? Center(
                                   child: Text(
                                     'Nenhum ponto encontrado.',
-                                    style: TextStyle(color: Colors.grey),
+                                    style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                    ),
                                   ),
                                 )
-                              : _buildattractionGrid(
+                              : _buildAttractionGrid(
                                   context,
                                   filteredAttractions,
                                   unlocked,
@@ -109,7 +111,6 @@ class _AttractionPageState extends State<AttractionPage> {
           ),
         ],
       ),
-
       floatingActionButton: SizedBox(
         height: 65,
         width: 65,
@@ -121,8 +122,12 @@ class _AttractionPageState extends State<AttractionPage> {
             );
           },
           shape: CircleBorder(),
-          backgroundColor: AppColors.secondary,
-          child: Icon(Icons.qr_code_scanner, size: 28),
+          backgroundColor: AppColors.secondaryStrong,
+          child: Icon(
+            Icons.qr_code_scanner,
+            size: 28,
+            color: AppColors.white,
+          ),
         ),
       ),
     );
@@ -135,15 +140,13 @@ class _AttractionPageState extends State<AttractionPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 15,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: AppColors.border,
               valueColor: AlwaysStoppedAnimation<Color>(
-                progress == 1
-                    ? const Color.fromARGB(255, 133, 205, 135)
-                    : const Color.fromARGB(255, 112, 153, 222),
+                progress == 1 ? AppColors.lightGreen : AppColors.primaryStrong,
               ),
             ),
           ),
@@ -152,7 +155,11 @@ class _AttractionPageState extends State<AttractionPage> {
             alignment: Alignment.bottomRight,
             child: Text(
               '$unlocked/$total',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
         ],
@@ -160,7 +167,7 @@ class _AttractionPageState extends State<AttractionPage> {
     );
   }
 
-  Widget _buildattractionGrid(
+  Widget _buildAttractionGrid(
     BuildContext context,
     List<QueryDocumentSnapshot> attractions,
     Set<String> unlocked,
@@ -182,17 +189,21 @@ class _AttractionPageState extends State<AttractionPage> {
         final data = attraction.data() as Map<String, dynamic>;
         final isUnlocked = unlocked.contains(attraction.id);
 
-        return _buildattractionCard(context, attraction.id, data, isUnlocked);
+        return _buildAttractionCard(context, attraction.id, data, isUnlocked);
       },
     );
   }
 
-  Widget _buildattractionCard(
+  Widget _buildAttractionCard(
     BuildContext context,
     String attractionId,
     Map<String, dynamic> data,
     bool isUnlocked,
   ) {
+    final cardColor = isUnlocked
+        ? AppColors.background
+        : AppColors.lightOrangeOpacity.withOpacity(0.4);
+
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: isUnlocked
@@ -206,7 +217,7 @@ class _AttractionPageState extends State<AttractionPage> {
             }
           : null,
       child: Card(
-        color: isUnlocked ? Colors.white : Colors.grey[300],
+        color: cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Stack(
           children: [
@@ -222,7 +233,7 @@ class _AttractionPageState extends State<AttractionPage> {
                           "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      color: isUnlocked ? null : Colors.black.withOpacity(0.5),
+                      color: isUnlocked ? null : AppColors.black.withOpacity(0.4),
                       colorBlendMode: isUnlocked ? null : BlendMode.darken,
                     ),
                   ),
@@ -233,7 +244,9 @@ class _AttractionPageState extends State<AttractionPage> {
                     data["titulo"] ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: isUnlocked ? Colors.black : Colors.grey[600],
+                      color: isUnlocked
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
                     ),
                     maxLines: 2,
                     textAlign: TextAlign.center,
@@ -243,14 +256,29 @@ class _AttractionPageState extends State<AttractionPage> {
                   padding: EdgeInsets.only(bottom: 8),
                   child: Text(
                     "Clique para ver detalhes",
-                    style: TextStyle(fontSize: 9, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ),
               ],
             ),
-
             if (!isUnlocked)
-              Center(child: Icon(Icons.lock, size: 40, color: Colors.white)),
+              Center(
+                child: Icon(
+                  Icons.lock,
+                  size: 40,
+                  color: AppColors.textThird,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: AppColors.black.withOpacity(0.4),
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

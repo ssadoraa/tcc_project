@@ -15,10 +15,21 @@ class DetailsPage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryStrong,
+            ),
           ),
-          SizedBox(height: 15),
-          child,
+          SizedBox(height: 12),
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.lightGreen.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: child,
+          ),
         ],
       ),
     );
@@ -27,14 +38,25 @@ class DetailsPage extends StatelessWidget {
   Widget buildMainInfo(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, size: 28, color: AppColors.primary),
-        SizedBox(height: 4),
+        CircleAvatar(
+          backgroundColor: AppColors.primary.withOpacity(0.15),
+          radius: 28,
+          child: Icon(icon, size: 28, color: AppColors.primary),
+        ),
+        SizedBox(height: 6),
         Text(
           value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         SizedBox(height: 2),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        ),
       ],
     );
   }
@@ -43,38 +65,28 @@ class DetailsPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Column(
-          children: [
-            Icon(Icons.arrow_upward),
-            SizedBox(height: 4),
-            Text("$inicial m", style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              "Inicial",
-              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-            ),
-          ],
+        buildAltitudeColumn(Icons.arrow_upward, "Inicial", inicial),
+        buildAltitudeColumn(Icons.terrain, "Máxima", maxima),
+        buildAltitudeColumn(Icons.arrow_downward, "Final", finalAlt),
+      ],
+    );
+  }
+
+  Widget buildAltitudeColumn(IconData icon, String label, int value) {
+    return Column(
+      children: [
+        Icon(icon, color: AppColors.primary),
+        SizedBox(height: 4),
+        Text(
+          "$value m",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
-        Column(
-          children: [
-            Icon(Icons.terrain),
-            SizedBox(height: 4),
-            Text("$maxima m", style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              "Máxima",
-              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-            ),
-          ],
-        ),
-        Column(
-          children: [
-            Icon(Icons.arrow_downward),
-            SizedBox(height: 4),
-            Text("$finalAlt m", style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              "Final",
-              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-            ),
-          ],
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
     );
@@ -83,15 +95,18 @@ class DetailsPage extends StatelessWidget {
   Widget buildDetailRow(IconData icon, String text) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.0),
-      child: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon),
-            SizedBox(width: 8),
-            Text(text, style: TextStyle(fontSize: 16)),
-          ],
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: AppColors.primary),
+          SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -103,13 +118,15 @@ class DetailsPage extends StatelessWidget {
       children: items
           .map(
             (item) => Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.secondary,
-                border: Border.all(color: Colors.grey.shade400),
+                color: AppColors.secondaryStrong,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(item, style: TextStyle(fontSize: 14)),
+              child: Text(
+                item,
+                style: TextStyle(fontSize: 14, color: AppColors.textThird),
+              ),
             ),
           )
           .toList(),
@@ -119,10 +136,14 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.primaryStrong,
+        iconTheme: IconThemeData(color: AppColors.textThird),
         title: Text(
-          "Detalhes do Ponto", 
-          style: TextStyle(fontSize: 18)),
+          "Detalhes do Ponto",
+          style: TextStyle(fontSize: 18, color: AppColors.textThird),
+        ),
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
@@ -131,10 +152,18 @@ class DetailsPage extends StatelessWidget {
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: AppColors.primaryStrong),
+            );
           }
+
           if (snapshot.hasError) {
-            return Center(child: Text("Erro: ${snapshot.error}"));
+            return Center(
+              child: Text(
+                "Erro: ${snapshot.error}",
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            );
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
@@ -144,15 +173,37 @@ class DetailsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ClipRRect(
-                  child: Image.network(
-                    data['image'] ??
-                        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60',
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(16),
+                  ),
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        data['image'] ??
+                            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                        height: 250,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      Container(
+                        height: 250,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.black.withOpacity(0.15),
+                              Colors.transparent,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-
                 SizedBox(height: 16),
 
                 Padding(
@@ -160,11 +211,11 @@ class DetailsPage extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: AppColors.lightOrangeOpacity,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
+                          color: AppColors.textPrimary.withOpacity(0.1),
                           blurRadius: 6,
                           offset: Offset(0, 3),
                         ),
@@ -173,13 +224,13 @@ class DetailsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 8),
                         Center(
                           child: Text(
                             data['titulo'] ?? '',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.primaryStrong,
                             ),
                           ),
                         ),
@@ -190,29 +241,27 @@ class DetailsPage extends StatelessWidget {
                             Icon(
                               Icons.location_on,
                               size: 25,
-                              color: Colors.grey,
+                              color: AppColors.primary,
                             ),
                             SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     data['localizacao'] ?? '',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
+                                      color: AppColors.textPrimary,
                                     ),
-                                    softWrap: true,
                                   ),
                                   Text(
                                     data['municipio'] ?? '',
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.grey[700],
+                                      color: AppColors.textSecondary,
                                     ),
-                                    softWrap: true,
                                   ),
                                 ],
                               ),
@@ -253,7 +302,6 @@ class DetailsPage extends StatelessWidget {
                 buildSection(
                   "Detalhes de Altitude",
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildAltitudeInfo(
                         data['altitude_inicial'],
@@ -262,7 +310,7 @@ class DetailsPage extends StatelessWidget {
                       ),
                       SizedBox(height: 12),
                       buildDetailRow(
-                        Icons.terrain,
+                        Icons.show_chart,
                         "Ganho de altitude: ${data['ganho_altitude']} m",
                       ),
                     ],
@@ -270,11 +318,19 @@ class DetailsPage extends StatelessWidget {
                 ),
 
                 if (data['descricao'] != null)
-                  buildSection("Descrição",
-                    Text(data['descricao'], style: TextStyle(fontSize: 16)),
+                  buildSection(
+                    "Descrição",
+                    Text(
+                      data['descricao'],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
                   ),
 
-                if (data['flora_relevante'] != null || data['atrativos'] != null)
+                if (data['flora_relevante'] != null ||
+                    data['atrativos'] != null)
                   Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 12.0,
@@ -285,16 +341,16 @@ class DetailsPage extends StatelessWidget {
                       children: [
                         if (data['flora_relevante'] != null)
                           Expanded(
-                            child: 
-                              buildSection("Flora",
+                            child: buildSection(
+                              "Flora",
                               buildTagRow(data['flora_relevante']),
                             ),
                           ),
                         SizedBox(width: 16),
                         if (data['atrativos'] != null)
                           Expanded(
-                            child: 
-                              buildSection("Atrativos",
+                            child: buildSection(
+                              "Atrativos",
                               buildTagRow(data['atrativos']),
                             ),
                           ),
@@ -303,8 +359,15 @@ class DetailsPage extends StatelessWidget {
                   ),
 
                 if (data['historico'] != null)
-                  buildSection("Curiosidade Histórica",
-                    Text(data['historico'], style: TextStyle(fontSize: 16)),
+                  buildSection(
+                    "Curiosidade Histórica",
+                    Text(
+                      data['historico'],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
                   ),
 
                 SizedBox(height: 32),

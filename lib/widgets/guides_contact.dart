@@ -18,22 +18,39 @@ class GuidesContact extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Contatos de Guias", style: TextStyle(fontSize: 18))
+        backgroundColor: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.white),
+        title: Text(
+          "Contatos de Guias",
+          style: TextStyle(fontSize: 18, color: AppColors.white),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('guides').orderBy('nome').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text("Erro: ${snapshot.error}"));
+            return Center(
+              child: Text(
+                "Erro: ${snapshot.error}",
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            );
           }
 
           final data = snapshot.data!.docs;
           if (data.isEmpty) {
-            return Center(child: Text("Nenhum guia encontrado."));
+            return Center(
+              child: Text(
+                "Nenhum guia encontrado.",
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            );
           }
 
           return ListView.builder(
@@ -45,16 +62,18 @@ class GuidesContact extends StatelessWidget {
               return Container(
                 margin: EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary,
+                  color: AppColors.lightOrangeOpacity,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withOpacity(0.25),
                       blurRadius: 8,
                       offset: Offset(0, 4),
                     ),
                   ],
-                  border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.15),
+                  ),
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(18.0),
@@ -66,13 +85,13 @@ class GuidesContact extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 24,
-                            backgroundColor: AppColors.primary.withOpacity(0.1),
+                            backgroundColor: AppColors.background,
                             child: Text(
                               (guide['nome'] ?? 'G')[0].toUpperCase(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: AppColors.primary,
+                                color: AppColors.secondaryStrong,
                               ),
                             ),
                           ),
@@ -86,34 +105,44 @@ class GuidesContact extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
+                                    color: AppColors.secondaryStrong,
                                   ),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
                                   "CAD: ${guide['cad']}",
-                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: AppColors.textSecondary,
+                                  ),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
                                   "${guide['cidade'] ?? ''} - ${guide['estado'] ?? ''}",
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 10),
                       Divider(
-                        color: AppColors.primary.withOpacity(0.3),
+                        color: AppColors.lightGreen,
                         thickness: 1,
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 10),
                       Container(
                         padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: AppColors.background,
+                          color: AppColors.background.withOpacity(0.95),
+                          border: Border.all(
+                            color: AppColors.primary.withOpacity(0.15),
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +153,11 @@ class GuidesContact extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  Icon(Icons.email_outlined, size: 18),
+                                  Icon(
+                                    Icons.email_outlined,
+                                    size: 18,
+                                    color: AppColors.secondaryStrong,
+                                  ),
                                   SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
@@ -132,13 +165,14 @@ class GuidesContact extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         decoration: TextDecoration.underline,
+                                        color: AppColors.textPrimary,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -151,14 +185,20 @@ class GuidesContact extends StatelessWidget {
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(Icons.phone_outlined, size: 18),
+                                        Icon(
+                                          Icons.phone_outlined,
+                                          size: 18,
+                                          color: AppColors.secondaryStrong,
+                                        ),
                                         SizedBox(width: 6),
                                         Expanded(
                                           child: Text(
                                             guide['telefone'] ?? '',
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              decoration: TextDecoration.underline,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              color: AppColors.textPrimary,
                                             ),
                                           ),
                                         ),
@@ -171,9 +211,12 @@ class GuidesContact extends StatelessWidget {
                                   onPressed: () {
                                     final telefone = (guide['telefone'] ?? "")
                                         .replaceAll(RegExp(r'[^0-9]'), '');
-                                    _launch(Uri.parse('https://wa.me/$telefone'));
+                                    _launch(
+                                      Uri.parse('https://wa.me/$telefone'),
+                                    );
                                   },
-                                  icon: Image.asset('assets/images/whatsapp.png',
+                                  icon: Image.asset(
+                                    'assets/images/whatsapp.png',
                                     width: 30,
                                     height: 30,
                                   ),

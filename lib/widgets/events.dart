@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:tcc_project/theme/app_colors.dart';
 
 class Events extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,17 +12,30 @@ class Events extends StatelessWidget {
     final double cardWidth = MediaQuery.of(context).size.width * 0.90;
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Eventos do Parque", style: TextStyle(fontSize: 18)),
+        backgroundColor: AppColors.primary,
+        iconTheme: IconThemeData(color: AppColors.white),
+        title: Text(
+          "Eventos do Parque",
+          style: TextStyle(fontSize: 18, color: AppColors.white),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('events').orderBy('data').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
-            return Center(child: Text("Nenhum evento disponível."));
+            return Center(
+              child: Text(
+                "Nenhum evento disponível.",
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            );
 
           final events = snapshot.data!.docs;
           final now = DateTime.now();
@@ -51,7 +65,8 @@ class Events extends StatelessWidget {
             itemBuilder: (context, index) {
               final event = sortedEvents[index];
               final title = event['titulo'] ?? 'Evento sem título';
-              final imageUrl = event['imagemUrl'] ??
+              final imageUrl =
+                  event['imagemUrl'] ??
                   'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60';
 
               Timestamp? timestamp = event['data'];
@@ -60,7 +75,9 @@ class Events extends StatelessWidget {
 
               if (timestamp != null) {
                 DateTime dateTime = timestamp.toDate();
-                formattedDate = DateFormat('dd/MM/yyyy\nHH:mm').format(dateTime);
+                formattedDate = DateFormat(
+                  'dd/MM/yyyy\nHH:mm',
+                ).format(dateTime);
                 isPastEvent = dateTime.isBefore(now);
               }
 
@@ -72,7 +89,7 @@ class Events extends StatelessWidget {
                   child: Stack(
                     children: [
                       Hero(
-                        tag: 'event-${title}',
+                        tag: 'event-$title',
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(25),
                           child: Image.network(
@@ -89,7 +106,10 @@ class Events extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
-                            colors: [Colors.black54, Colors.transparent],
+                            colors: [
+                              AppColors.black.withOpacity(0.65),
+                              Colors.transparent,
+                            ],
                           ),
                         ),
                       ),
@@ -103,17 +123,31 @@ class Events extends StatelessWidget {
                             Text(
                               title,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.white,
                                 fontSize: 26,
                                 fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    color: AppColors.black.withOpacity(0.4),
+                                    offset: Offset(1, 1),
+                                    blurRadius: 4,
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(height: 5),
                             Text(
                               formattedDate,
                               style: TextStyle(
-                                color: Colors.white70,
+                                color: AppColors.white.withOpacity(0.85),
                                 fontSize: 18,
+                                shadows: [
+                                  Shadow(
+                                    color: AppColors.black.withOpacity(0.4),
+                                    offset: Offset(1, 1),
+                                    blurRadius: 4,
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(height: 10),
@@ -125,39 +159,45 @@ class Events extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (_) => EventDetailScreen(
                                         imageUrl: imageUrl,
-                                        tag: 'event-${title}',
+                                        tag: 'event-$title',
                                       ),
                                     ),
                                   );
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
-                                      vertical: 6, horizontal: 12),
+                                    vertical: 6,
+                                    horizontal: 12,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color:Color.fromARGB(255, 124, 124, 124),
+                                    color: AppColors.primaryStrong,
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Text(
                                     "Ver mais",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             if (isPastEvent)
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 12),
+                                  vertical: 6,
+                                  horizontal: 12,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Colors.redAccent,
+                                  color: AppColors.earthBrown.withOpacity(0.9),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Text(
                                   "Evento já ocorreu",
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                           ],
@@ -184,16 +224,14 @@ class EventDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Center(
           child: Hero(
             tag: tag,
             child: InteractiveViewer(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-              ),
+              child: Image.network(imageUrl, fit: BoxFit.contain),
             ),
           ),
         ),
