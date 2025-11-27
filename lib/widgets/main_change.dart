@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: AppColors.earthBrown.withAlpha(250),
         currentIndex: itemSelecionado,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primaryStrong,
+        selectedItemColor: AppColors.white,
         unselectedItemColor: AppColors.primary,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         onTap: (index) {

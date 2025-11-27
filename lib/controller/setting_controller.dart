@@ -12,7 +12,6 @@ class SettingController extends ChangeNotifier {
 
   SettingController({required this.authService});
 
-  // Switches
   void toggleDarkMode(bool value) {
     darkMode = value;
     notifyListeners();
@@ -23,7 +22,6 @@ class SettingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Troca de senha
   Future<bool> changePassword(String atual, String nova) async {
     loading = true;
     passwordError = null;
@@ -42,7 +40,6 @@ class SettingController extends ChangeNotifier {
     }
   }
 
-  // Logout
   Future<void> logout() async {
     await authService.logout();
   }

@@ -1,48 +1,20 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc_project/controller/phrase_controller.dart';
-import 'package:tcc_project/theme/app_colors.dart';
-import '../services/phrase_service.dart';
+import 'package:provider/provider.dart';
+import '../controller/phrase_controller.dart';
+import '../theme/app_colors.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
-class PhraseCard extends StatefulWidget {
+class PhraseCard extends StatelessWidget {
   PhraseCard({Key? key}) : super(key: key);
 
   @override
-  _PhraseCardState createState() => _PhraseCardState();
-}
-
-class _PhraseCardState extends State<PhraseCard> {
-  late final PhraseController controller;
-  String currentPhrase = "";
-
-  @override
-  void initState() {
-    super.initState();
-    controller = PhraseController(service: PhraseService());
-
-    controller.loadPhrases((phrase) {
-      if (mounted) {
-        setState(() {
-          currentPhrase = phrase;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return currentPhrase.isEmpty
-        ? Center(child: CircularProgressIndicator(color: AppColors.primary))
-        : _buildCard();
-  }
+    final controller = context.watch<PhraseController>();
 
-  Widget _buildCard() {
+    if (controller.currentPhrase.isEmpty) {
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
+    }
+
     return Card(
       color: AppColors.background,
       elevation: 5,
@@ -59,10 +31,10 @@ class _PhraseCardState extends State<PhraseCard> {
             Icon(Icons.lightbulb_outline, size: 26, color: AppColors.primary),
             SizedBox(height: 12),
             AnimatedTextKit(
-              key: ValueKey(currentPhrase),
+              key: ValueKey(controller.currentPhrase),
               animatedTexts: [
                 TypewriterAnimatedText(
-                  currentPhrase,
+                  controller.currentPhrase,
                   textStyle: TextStyle(
                     fontSize: 18,
                     height: 1.4,
