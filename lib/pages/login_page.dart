@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
     if (arg != null) controller.setFormAction(arg);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -29,11 +29,14 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _label("Email"),
+                    _label(context, "Email"),
                     TextFormField(
                       controller: controller.email,
-                      style: TextStyle(color: AppColors.textPrimary),
-                      decoration: _inputDecoration(hint: 'Digite seu email'),
+                      style: TextStyle(color: AppColors.textPrimary(context)),
+                      decoration: _inputDecoration(
+                        context,
+                        hint: 'Digite seu email',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Informe o email';
@@ -45,12 +48,15 @@ class LoginPage extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 20),
-                    _label("Senha"),
+                    _label(context, "Senha"),
                     TextFormField(
                       controller: controller.senha,
                       obscureText: true,
-                      style: TextStyle(color: AppColors.textPrimary),
-                      decoration: _inputDecoration(hint: 'Digite sua senha'),
+                      style: TextStyle(color: AppColors.textPrimary(context)),
+                      decoration: _inputDecoration(
+                        context,
+                        hint: 'Digite sua senha',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Informe a senha';
@@ -63,12 +69,13 @@ class LoginPage extends StatelessWidget {
                     ),
                     if (!controller.isLogin) ...[
                       SizedBox(height: 20),
-                      _label("Confirmar senha"),
+                      _label(context, "Confirmar senha"),
                       TextFormField(
                         controller: controller.confirmarSenha,
                         obscureText: true,
-                        style: TextStyle(color: AppColors.textPrimary),
+                        style: TextStyle(color: AppColors.textPrimary(context)),
                         decoration: _inputDecoration(
+                          context,
                           hint: 'Confirme sua senha',
                         ),
                         validator: (value) {
@@ -82,13 +89,11 @@ class LoginPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 20),
-                      _label("Nome completo"),
+                      _label(context, "Nome completo"),
                       TextFormField(
                         controller: controller.nome,
-                        style: TextStyle(color: AppColors.textPrimary),
-                        decoration: _inputDecoration(
-                          hint: 'Digite seu nome completo',
-                        ),
+                        style: TextStyle(color: AppColors.textPrimary(context)),
+                        decoration: _inputDecoration(context, hint: 'Digite seu nome completo'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Informe seu nome';
@@ -100,16 +105,17 @@ class LoginPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 20),
-                      _label("Data de nascimento"),
+                      _label(context, "Data de nascimento"),
                       TextFormField(
                         controller: controller.dataNascimento,
                         readOnly: true,
-                        style: TextStyle(color: AppColors.textPrimary),
+                        style: TextStyle(color: AppColors.textPrimary(context)),
                         decoration: _inputDecoration(
+                          context,
                           hint: 'Selecione sua data de nascimento',
                           suffixIcon: Icon(
                             Icons.calendar_month,
-                            color: AppColors.lightGreen,
+                            color: AppColors.lightGreen(context),
                           ),
                         ),
                         validator: (value) {
@@ -134,12 +140,15 @@ class LoginPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 20),
-                      _label("País"),
+                      _label(context, "País"),
                       TextFormField(
                         controller: controller.pais,
                         readOnly: true,
-                        style: TextStyle(color: AppColors.textPrimary),
-                        decoration: _inputDecoration(hint: 'Selecione um país'),
+                        style: TextStyle(color: AppColors.textPrimary(context)),
+                        decoration: _inputDecoration(
+                          context,
+                          hint: 'Selecione um país',
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Selecione um país';
@@ -166,12 +175,10 @@ class LoginPage extends StatelessWidget {
                       ),
                       if (controller.pais.text == 'Brazil') ...[
                         SizedBox(height: 20),
-                        _label("Estado"),
+                        _label(context, "Estado"),
                         DropdownButtonFormField<int>(
                           value: controller.estadoSelecionado,
-                          decoration: _inputDecoration(
-                            hint: 'Selecione um estado',
-                          ),
+                          decoration: _inputDecoration(context, hint: 'Selecione um estado'),
                           validator: (value) {
                             if (value == null) {
                               return 'Selecione um estado';
@@ -184,7 +191,7 @@ class LoginPage extends StatelessWidget {
                               child: Text(
                                 estado['sigla'],
                                 style: TextStyle(
-                                  color: AppColors.textPrimary,
+                                  color: AppColors.textPrimary(context),
                                 ),
                               ),
                             );
@@ -196,12 +203,10 @@ class LoginPage extends StatelessWidget {
                           },
                         ),
                         SizedBox(height: 20),
-                        _label("Cidade"),
+                        _label(context, "Cidade"),
                         DropdownButtonFormField<int>(
                           value: controller.cidadeSelecionada,
-                          decoration: _inputDecoration(
-                            hint: 'Selecione uma cidade',
-                          ),
+                          decoration: _inputDecoration(context, hint: 'Selecione uma cidade'),
                           validator: (value) {
                             if (value == null) {
                               return 'Selecione uma cidade';
@@ -214,7 +219,7 @@ class LoginPage extends StatelessWidget {
                               child: Text(
                                 cidade['nome'],
                                 style: TextStyle(
-                                  color: AppColors.textPrimary,
+                                  color: AppColors.textPrimary(context),
                                 ),
                               ),
                             );
@@ -230,13 +235,15 @@ class LoginPage extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: AppColors.background,
+                          backgroundColor: AppColors.primary(context),
+                          foregroundColor: AppColors.background(context),
                           padding: EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          shadowColor: AppColors.primary.withOpacity(0.3),
+                          shadowColor: AppColors.primary(
+                            context,
+                          ).withOpacity(0.3),
                           elevation: 4,
                         ),
                         onPressed: () {
@@ -251,7 +258,7 @@ class LoginPage extends StatelessWidget {
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                  color: AppColors.background,
+                                  color: AppColors.background(context),
                                   strokeWidth: 2,
                                 ),
                               )
@@ -270,7 +277,9 @@ class LoginPage extends StatelessWidget {
                             vertical: 14,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withOpacity(0.25),
+                            color: AppColors.secondary(
+                              context,
+                            ).withOpacity(0.25),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: RichText(
@@ -278,7 +287,7 @@ class LoginPage extends StatelessWidget {
                             text: TextSpan(
                               style: TextStyle(
                                 fontSize: 15,
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimary(context),
                               ),
                               children: [
                                 TextSpan(
@@ -291,7 +300,7 @@ class LoginPage extends StatelessWidget {
                                       ? "Cadastre-se"
                                       : "Entrar",
                                   style: TextStyle(
-                                    color: AppColors.lightGreen,
+                                    color: AppColors.lightGreen(context),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -312,24 +321,28 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _label(String text) {
+  Widget _label(BuildContext context, String text) {
     return Text(
       text,
       style: TextStyle(
         fontSize: 13,
-        color: AppColors.textPrimary,
+        color: AppColors.textPrimary(context),
         fontWeight: FontWeight.w500,
       ),
     );
   }
 
-  InputDecoration _inputDecoration({String? hint, Widget? suffixIcon}) {
+  InputDecoration _inputDecoration(
+    BuildContext context, {
+    String? hint,
+    Widget? suffixIcon,
+  }) {
     return InputDecoration(
       filled: true,
-      fillColor: AppColors.lightOrangeOpacity.withOpacity(0.3),
+      fillColor: AppColors.lightOrangeOpacity(context).withOpacity(0.3),
       hintText: hint,
       hintStyle: TextStyle(
-        color: AppColors.textSecondary.withOpacity(0.8),
+        color: AppColors.textSecondary(context).withOpacity(0.8),
         fontSize: 11,
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -19,13 +19,13 @@ class GuidesContact extends StatelessWidget {
     final controller = context.watch<GuideController>();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        iconTheme: IconThemeData(color: AppColors.white),
+        backgroundColor: AppColors.primary(context),
+        iconTheme: IconThemeData(color: AppColors.white(context)),
         title: Text(
           "Contatos de Guias",
-          style: TextStyle(color: AppColors.white, fontSize: 18),
+          style: TextStyle(color: AppColors.white(context), fontSize: 18),
         ),
       ),
       body: StreamBuilder(
@@ -33,7 +33,9 @@ class GuidesContact extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(
+                color: AppColors.primary(context),
+              ),
             );
 
           final guides = snapshot.data!;
@@ -43,7 +45,7 @@ class GuidesContact extends StatelessWidget {
             return Center(
               child: Text(
                 "Nenhum guia encontrado.",
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.textPrimary(context)),
               ),
             );
 
@@ -72,16 +74,16 @@ class GuideCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppColors.lightOrangeOpacity,
+        color: AppColors.lightOrangeOpacity(context),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.25),
+            color: AppColors.primary(context).withOpacity(0.25),
             blurRadius: 8,
             offset: Offset(0, 4),
           ),
         ],
-        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+        border: Border.all(color: AppColors.primary(context).withOpacity(0.15)),
       ),
       child: Padding(
         padding: EdgeInsets.all(18),
@@ -92,13 +94,13 @@ class GuideCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundColor: AppColors.background,
+                  backgroundColor: AppColors.background(context),
                   child: Text(
                     guide.nome[0].toUpperCase(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: AppColors.secondaryStrong,
+                      color: AppColors.secondaryStrong(context),
                     ),
                   ),
                 ),
@@ -112,7 +114,7 @@ class GuideCard extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: AppColors.secondaryStrong,
+                          color: AppColors.secondaryStrong(context),
                         ),
                       ),
                       SizedBox(height: 4),
@@ -120,7 +122,7 @@ class GuideCard extends StatelessWidget {
                         "CAD: ${guide.cad}",
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
-                          color: AppColors.textSecondary,
+                          color: AppColors.textSecondary(context),
                         ),
                       ),
                       SizedBox(height: 4),
@@ -128,7 +130,7 @@ class GuideCard extends StatelessWidget {
                         "${guide.cidade} - ${guide.estado}",
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: AppColors.textSecondary(context),
                         ),
                       ),
                     ],
@@ -137,14 +139,16 @@ class GuideCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Divider(color: AppColors.lightGreen, thickness: 2),
+            Divider(color: AppColors.lightGreen(context), thickness: 2),
             SizedBox(height: 10),
             Container(
               padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: AppColors.background.withOpacity(0.95),
-                border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+                color: AppColors.background(context).withOpacity(0.95),
+                border: Border.all(
+                  color: AppColors.primary(context).withOpacity(0.15),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +161,7 @@ class GuideCard extends StatelessWidget {
                         Icon(
                           Icons.email_outlined,
                           size: 18,
-                          color: AppColors.secondaryStrong,
+                          color: AppColors.secondaryStrong(context),
                         ),
                         SizedBox(width: 6),
                         Expanded(
@@ -166,7 +170,7 @@ class GuideCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               decoration: TextDecoration.underline,
-                              color: AppColors.textPrimary,
+                              color: AppColors.textPrimary(context),
                             ),
                           ),
                         ),
@@ -185,7 +189,7 @@ class GuideCard extends StatelessWidget {
                               Icon(
                                 Icons.phone_outlined,
                                 size: 18,
-                                color: AppColors.secondaryStrong,
+                                color: AppColors.secondaryStrong(context),
                               ),
                               SizedBox(width: 6),
                               Expanded(
@@ -194,7 +198,7 @@ class GuideCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     decoration: TextDecoration.underline,
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textPrimary(context),
                                   ),
                                 ),
                               ),

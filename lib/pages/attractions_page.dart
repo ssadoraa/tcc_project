@@ -33,7 +33,7 @@ class _AttractionPageState extends State<AttractionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: Column(
         children: [
           SizedBox(height: 15),
@@ -80,7 +80,7 @@ class _AttractionPageState extends State<AttractionPage> {
                                   child: Text(
                                     "Nenhum ponto encontrado.",
                                     style: TextStyle(
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.textSecondary(context),
                                     ),
                                   ),
                                 )
@@ -107,13 +107,13 @@ class _AttractionPageState extends State<AttractionPage> {
         onChanged: (_) => setState(() {}),
         decoration: InputDecoration(
           hintText: 'Pesquise pelo lugar...',
-          prefixIcon: Icon(Icons.search, color: AppColors.primary),
+          prefixIcon: Icon(Icons.search, color: AppColors.primary(context)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: AppColors.lightOrangeOpacity,
+          fillColor: AppColors.lightOrangeOpacity(context),
         ),
       ),
     );
@@ -130,9 +130,9 @@ class _AttractionPageState extends State<AttractionPage> {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 15,
-              backgroundColor: AppColors.border,
+              backgroundColor: AppColors.border(context),
               valueColor: AlwaysStoppedAnimation<Color>(
-                progress == 1 ? AppColors.lightGreen : AppColors.primaryStrong,
+                progress == 1 ? AppColors.lightGreen(context) : AppColors.primaryStrong(context),
               ),
             ),
           ),
@@ -183,8 +183,8 @@ class _AttractionPageState extends State<AttractionPage> {
       borderRadius: BorderRadius.circular(20),
       child: Card(
         color: isUnlocked
-            ? AppColors.background
-            : AppColors.lightOrangeOpacity.withOpacity(0.4),
+            ? AppColors.lightOrangeOpacity(context).withOpacity(0.5)
+            : AppColors.earthBrown(context).withOpacity(0.7),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Stack(
           children: [
@@ -199,7 +199,7 @@ class _AttractionPageState extends State<AttractionPage> {
                       a.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      color: isUnlocked ? null : Colors.black.withOpacity(0.4),
+                      color: isUnlocked ? null : AppColors.black(context).withOpacity(0.4),
                       colorBlendMode: isUnlocked ? null : BlendMode.darken,
                       errorBuilder: (context, error, stackTrace) {
                         return Image.network(
@@ -208,7 +208,7 @@ class _AttractionPageState extends State<AttractionPage> {
                           width: double.infinity,
                           color: isUnlocked
                               ? null
-                              : Colors.black.withOpacity(0.4),
+                              : AppColors.black(context).withOpacity(0.4),
                           colorBlendMode: isUnlocked ? null : BlendMode.darken,
                         );
                       },
@@ -226,8 +226,8 @@ class _AttractionPageState extends State<AttractionPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: isUnlocked
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
+                              ? AppColors.textPrimary(context)
+                              : AppColors.textSecondary(context),
                         ),
                       ),
                       if (isUnlocked)
@@ -237,7 +237,7 @@ class _AttractionPageState extends State<AttractionPage> {
                             "Clique para ver detalhes",
                             style: TextStyle(
                               fontSize: 10,
-                              color: AppColors.textSecondary,
+                              color: AppColors.textSecondary(context),
                             ),
                           ),
                         ),
@@ -249,7 +249,7 @@ class _AttractionPageState extends State<AttractionPage> {
             ),
             if (!isUnlocked)
               Center(
-                child: Icon(Icons.lock, size: 40, color: AppColors.textThird),
+                child: Icon(Icons.lock, size: 40, color: AppColors.textThird(context)),
               ),
           ],
         ),
@@ -262,7 +262,7 @@ class _AttractionPageState extends State<AttractionPage> {
       height: 65,
       width: 65,
       child: FloatingActionButton(
-        backgroundColor: AppColors.secondaryStrong,
+        backgroundColor: AppColors.secondaryStrong(context),
         shape: CircleBorder(),
         onPressed: () {
           Navigator.push(
@@ -270,7 +270,7 @@ class _AttractionPageState extends State<AttractionPage> {
             MaterialPageRoute(builder: (_) => QRScannerPage()),
           );
         },
-        child: Icon(Icons.qr_code_scanner, size: 28, color: AppColors.white),
+        child: Icon(Icons.qr_code_scanner, size: 28, color: AppColors.white(context)),
       ),
     );
   }

@@ -42,22 +42,22 @@ class _HomePageState extends State<HomePage> {
               'DesenGo',
               style: TextStyle(
                 fontSize: 23,
-                color: AppColors.primary,
+                color: AppColors.primary(context),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          backgroundColor: AppColors.secondaryStrong,
+          backgroundColor: AppColors.secondaryStrong(context),
           elevation: 4,
         ),
       ),
       body: _getPage(itemSelecionado),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.earthBrown.withAlpha(250),
+        backgroundColor: AppColors.earthBrown(context).withAlpha(250),
         currentIndex: itemSelecionado,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.white,
-        unselectedItemColor: AppColors.primary,
+        selectedItemColor: AppColors.white(context),
+        unselectedItemColor: AppColors.primary(context),
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         onTap: (index) {
           setState(() {
@@ -66,8 +66,14 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt_rounded), label: 'Pontos'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Infos'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_rounded),
+            label: 'Pontos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'Infos',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Config'),
         ],
       ),

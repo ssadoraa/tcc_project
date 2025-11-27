@@ -18,14 +18,14 @@ class SettingPage extends StatelessWidget {
     final controller = context.watch<SettingController>();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
             _sectionConta(context, controller),
             SizedBox(height: 16),
-            _sectionPreferencias(controller),
+            _sectionPreferencias(context, controller),
             SizedBox(height: 16),
             _sectionSobre(context),
             SizedBox(height: 32),
@@ -38,10 +38,12 @@ class SettingPage extends StatelessWidget {
 
   Widget _sectionConta(BuildContext context, SettingController controller) {
     return _buildSectionCard(
+      context,
       title: "Conta",
-      color: AppColors.lightOrangeOpacity,
+      color: AppColors.lightOrangeOpacity(context),
       children: [
         _buildOptionTile(
+          context: context,
           icon: Icons.person,
           title: "Editar perfil",
           onTap: () => Navigator.push(
@@ -50,6 +52,7 @@ class SettingPage extends StatelessWidget {
           ),
         ),
         _buildOptionTile(
+          context: context,
           icon: Icons.lock,
           title: "Alterar senha",
           onTap: () => _openChangePasswordDialog(context, controller),
@@ -58,18 +61,24 @@ class SettingPage extends StatelessWidget {
     );
   }
 
-  Widget _sectionPreferencias(SettingController controller) {
+  Widget _sectionPreferencias(
+    BuildContext context,
+    SettingController controller,
+  ) {
     return _buildSectionCard(
+      context,
       title: "Preferências",
-      color: AppColors.lightGreen.withOpacity(0.8),
+      color: AppColors.lightGreen(context).withOpacity(0.8),
       children: [
         _buildSwitchTile(
+          context: context,
           icon: Icons.dark_mode,
           title: "Modo escuro",
           value: controller.darkMode,
           onChanged: controller.toggleDarkMode,
         ),
         _buildSwitchTile(
+          context: context,
           icon: Icons.notifications_active,
           title: "Notificações",
           value: controller.notifications,
@@ -81,10 +90,12 @@ class SettingPage extends StatelessWidget {
 
   Widget _sectionSobre(BuildContext context) {
     return _buildSectionCard(
+      context,
       title: "Sobre",
-      color: AppColors.lightOrangeOpacity,
+      color: AppColors.lightOrangeOpacity(context),
       children: [
         _buildOptionTile(
+          context: context,
           icon: Icons.info_outline,
           title: "Sobre o app",
           onTap: () => _showAboutDialog(context),
@@ -98,11 +109,7 @@ class SettingPage extends StatelessWidget {
               'https://www.instagram.com/parqueestadualdodesengano/',
             ),
             IconButton(
-              icon: Icon(
-                Icons.facebook,
-                size: 40,
-                color: Colors.blueAccent,
-              ),
+              icon: Icon(Icons.facebook, size: 40, color: Colors.blueAccent),
               onPressed: () => launchUrlString(
                 'https://www.facebook.com/ParqueEstadualDoDesengano/?locale=pt_BR',
               ),
@@ -122,8 +129,8 @@ class SettingPage extends StatelessWidget {
       icon: Icon(Icons.logout),
       label: Text("Sair da conta"),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryStrong,
-        foregroundColor: AppColors.background,
+        backgroundColor: AppColors.primaryStrong(context),
+        foregroundColor: AppColors.background(context),
         minimumSize: Size(double.infinity, 48),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -165,9 +172,18 @@ class SettingPage extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _styledPasswordField(atualController, label: "Senha atual"),
-              _styledPasswordField(novaController, label: "Nova senha"),
               _styledPasswordField(
+                context,
+                atualController,
+                label: "Senha atual",
+              ),
+              _styledPasswordField(
+                context,
+                novaController,
+                label: "Nova senha",
+              ),
+              _styledPasswordField(
+                context,
                 confirmarController,
                 label: "Confirmar senha",
               ),
@@ -201,9 +217,7 @@ class SettingPage extends StatelessWidget {
                 if (success) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Senha alterada com sucesso!"),
-                    ),
+                    SnackBar(content: Text("Senha alterada com sucesso!")),
                   );
                 } else {
                   setState(() {});
@@ -236,7 +250,8 @@ class SettingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionCard({
+  Widget _buildSectionCard(
+    BuildContext context, {
     required String title,
     required List<Widget> children,
     Color? color,
@@ -245,11 +260,11 @@ class SettingPage extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color ?? AppColors.lightGreen,
+        color: color ?? AppColors.lightGreen(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.1),
+            color: AppColors.textPrimary(context).withOpacity(0.1),
             blurRadius: 4,
             offset: Offset(0, 2),
           ),
@@ -272,6 +287,7 @@ class SettingPage extends StatelessWidget {
   }
 
   Widget _buildOptionTile({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -279,16 +295,20 @@ class SettingPage extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 8),
       leading: CircleAvatar(
-        backgroundColor: AppColors.background,
-        child: Icon(icon, color: AppColors.primaryStrong),
+        backgroundColor: AppColors.background(context),
+        child: Icon(icon, color: AppColors.primaryStrong(context)),
       ),
-      title: Text(title, style: TextStyle(color: AppColors.textPrimary)),
+      title: Text(
+        title,
+        style: TextStyle(color: AppColors.textPrimary(context)),
+      ),
       trailing: Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
     );
   }
 
   Widget _buildSwitchTile({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required bool value,
@@ -296,12 +316,15 @@ class SettingPage extends StatelessWidget {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.background,
-        child: Icon(icon, color: AppColors.secondaryStrong),
+        backgroundColor: AppColors.background(context),
+        child: Icon(icon, color: AppColors.secondaryStrong(context)),
       ),
-      title: Text(title, style: TextStyle(color: AppColors.textPrimary)),
+      title: Text(
+        title,
+        style: TextStyle(color: AppColors.textPrimary(context)),
+      ),
       value: value,
-      activeColor: AppColors.primaryStrong,
+      activeColor: AppColors.primaryStrong(context),
       onChanged: onChanged,
     );
   }
@@ -314,6 +337,7 @@ class SettingPage extends StatelessWidget {
   }
 
   Widget _styledPasswordField(
+    BuildContext context,
     TextEditingController controller, {
     required String label,
   }) {
@@ -325,10 +349,7 @@ class SettingPage extends StatelessWidget {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.grey.shade100,
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 14,
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           labelText: label,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -336,7 +357,10 @@ class SettingPage extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.primaryStrong, width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.primaryStrong(context),
+              width: 1.5,
+            ),
           ),
         ),
       ),

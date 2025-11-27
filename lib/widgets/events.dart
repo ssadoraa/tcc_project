@@ -10,13 +10,13 @@ class Events extends StatelessWidget {
     final controller = context.watch<EventController>();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        iconTheme: IconThemeData(color: AppColors.white),
+        backgroundColor: AppColors.primary(context),
+        iconTheme: IconThemeData(color: AppColors.white(context)),
         title: Text(
           "Eventos do Parque",
-          style: TextStyle(color: AppColors.white, fontSize: 18),
+          style: TextStyle(color: AppColors.white(context), fontSize: 18),
         ),
       ),
       body: StreamBuilder<List<Event>>(
@@ -24,7 +24,7 @@ class Events extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: AppColors.primary(context)),
             );
           }
 
@@ -34,7 +34,7 @@ class Events extends StatelessWidget {
             return Center(
               child: Text(
                 "Nenhum evento disponível.",
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.textPrimary(context)),
               ),
             );
           }
@@ -83,7 +83,7 @@ class EventCard extends StatelessWidget {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      AppColors.black.withOpacity(0.65),
+                      AppColors.black(context).withOpacity(0.65),
                       Colors.transparent,
                     ],
                   ),
@@ -99,12 +99,12 @@ class EventCard extends StatelessWidget {
                     Text(
                       event.titulo,
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: AppColors.white(context),
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         shadows: [
                           Shadow(
-                            color: AppColors.black.withOpacity(0.4),
+                            color: AppColors.black(context).withOpacity(0.4),
                             offset: Offset(1, 1),
                             blurRadius: 4,
                           ),
@@ -117,11 +117,11 @@ class EventCard extends StatelessWidget {
                           ? "${event.data!.day.toString().padLeft(2, '0')}/${event.data!.month.toString().padLeft(2, '0')}/${event.data!.year}\n${event.data!.hour.toString().padLeft(2, '0')}:${event.data!.minute.toString().padLeft(2, '0')}"
                           : 'Data não informada',
                       style: TextStyle(
-                        color: AppColors.white.withOpacity(0.85),
+                        color: AppColors.white(context).withOpacity(0.85),
                         fontSize: 18,
                         shadows: [
                           Shadow(
-                            color: AppColors.black.withOpacity(0.4),
+                            color: AppColors.black(context).withOpacity(0.4),
                             offset: Offset(1, 1),
                             blurRadius: 4,
                           ),
@@ -143,7 +143,7 @@ class EventCard extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryStrong,
+                          backgroundColor: AppColors.primaryStrong(context),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -151,7 +151,7 @@ class EventCard extends StatelessWidget {
                         child: Text(
                           "Ver mais",
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: AppColors.white(context),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -163,13 +163,13 @@ class EventCard extends StatelessWidget {
                           horizontal: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.earthBrown.withOpacity(0.9),
+                          color: AppColors.earthBrown(context).withOpacity(0.9),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(
                           "Evento já ocorreu",
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: AppColors.white(context),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -194,7 +194,7 @@ class EventDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: Stack(
         children: [
           Center(
@@ -212,7 +212,7 @@ class EventDetailScreen extends StatelessWidget {
               onTap: () => Navigator.pop(context),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: AppColors.black(context).withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
                 padding: EdgeInsets.all(8),

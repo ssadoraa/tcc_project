@@ -12,23 +12,29 @@ class PhraseCard extends StatelessWidget {
     final controller = context.watch<PhraseController>();
 
     if (controller.currentPhrase.isEmpty) {
-      return Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primary(context)),
+      );
     }
 
     return Card(
-      color: AppColors.background,
+      color: AppColors.background(context),
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: AppColors.border, width: 1.3),
+        side: BorderSide(color: AppColors.border(context), width: 1.3),
       ),
-      shadowColor: AppColors.primary.withOpacity(0.25),
+      shadowColor: AppColors.primary(context).withOpacity(0.25),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.lightbulb_outline, size: 26, color: AppColors.primary),
+            Icon(
+              Icons.lightbulb_outline,
+              size: 26,
+              color: AppColors.primary(context),
+            ),
             SizedBox(height: 12),
             AnimatedTextKit(
               key: ValueKey(controller.currentPhrase),
@@ -39,7 +45,7 @@ class PhraseCard extends StatelessWidget {
                     fontSize: 18,
                     height: 1.4,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textPrimary(context),
                   ),
                   speed: Duration(milliseconds: 40),
                   textAlign: TextAlign.center,

@@ -58,9 +58,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   InputDecoration _inputDecoration({String? hint, Widget? suffixIcon}) {
     return InputDecoration(
       filled: true,
-      fillColor: AppColors.lightOrangeOpacity,
+      fillColor: AppColors.lightOrangeOpacity(context),
       hintText: hint,
-      hintStyle: TextStyle(color: AppColors.textSecondary),
+      hintStyle: TextStyle(color: AppColors.textSecondary(context)),
       suffixIcon: suffixIcon,
       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       border: OutlineInputBorder(
@@ -75,7 +75,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       text,
       style: TextStyle(
         fontSize: 13,
-        color: AppColors.textPrimary,
+        color: AppColors.textPrimary(context),
         fontWeight: FontWeight.w600,
       ),
     );
@@ -86,9 +86,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final controller = Provider.of<LoginController>(context);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: isLoading
-          ? Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primary(context),
+              ),
+            )
           : Stack(
               children: [
                 SingleChildScrollView(
@@ -101,7 +105,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         _label("Nome completo"),
                         TextFormField(
                           controller: controller.nome,
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: AppColors.textPrimary(context)),
                           decoration: _inputDecoration(),
                         ),
                         SizedBox(height: 20),
@@ -110,11 +114,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         TextFormField(
                           controller: controller.dataNascimento,
                           readOnly: true,
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: AppColors.textPrimary(context)),
                           decoration: _inputDecoration(
                             suffixIcon: Icon(
                               Icons.calendar_month,
-                              color: AppColors.primary,
+                              color: AppColors.primary(context),
                             ),
                           ),
                           onTap: () async {
@@ -127,9 +131,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 return Theme(
                                   data: Theme.of(context).copyWith(
                                     colorScheme: ColorScheme.light(
-                                      primary: AppColors.primary,
-                                      onPrimary: AppColors.background,
-                                      onSurface: AppColors.textPrimary,
+                                      primary: AppColors.primary(context),
+                                      onPrimary: AppColors.background(context),
+                                      onSurface: AppColors.textPrimary(context),
                                     ),
                                   ),
                                   child: child!,
@@ -149,7 +153,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         TextFormField(
                           controller: controller.pais,
                           readOnly: true,
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: AppColors.textPrimary(context)),
                           decoration: _inputDecoration(
                             hint: "Selecione um país",
                           ),
@@ -178,14 +182,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           DropdownButtonFormField<int>(
                             value: controller.estadoSelecionado,
                             decoration: _inputDecoration(),
-                            dropdownColor: AppColors.lightOrangeOpacity,
+                            dropdownColor: AppColors.background(
+                              context,
+                            ),
                             items: controller.estados.map((estado) {
                               return DropdownMenuItem<int>(
                                 value: estado['id'],
                                 child: Text(
                                   estado['sigla'],
                                   style: TextStyle(
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textPrimary(context),
                                   ),
                                 ),
                               );
@@ -202,14 +208,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           DropdownButtonFormField<int>(
                             value: controller.cidadeSelecionada,
                             decoration: _inputDecoration(),
-                            dropdownColor: AppColors.lightOrangeOpacity,
+                            dropdownColor: AppColors.background(
+                              context,
+                            ),
                             items: controller.cidades.map((cidade) {
                               return DropdownMenuItem<int>(
                                 value: cidade['id'],
                                 child: Text(
                                   cidade['nome'],
                                   style: TextStyle(
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.textPrimary(context),
                                   ),
                                 ),
                               );
@@ -225,8 +233,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.background,
+                              backgroundColor: AppColors.primary(context),
+                              foregroundColor: AppColors.background(context),
                               padding: EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -259,8 +267,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     .updateUserProfile(usuarioAtualizado);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text("Perfil atualizado!"),
-                                    backgroundColor: AppColors.primary,
+                                    content: Center(
+                                      child: Text("Perfil atualizado!", 
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.textThird(context),
+                                      )),
+                                    ), 
+                                    backgroundColor: AppColors.lightOrange(context),
                                   ),
                                 );
                                 Navigator.pop(context);
@@ -275,7 +289,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             },
                             child: Text(
                               "Salvar Alterações",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

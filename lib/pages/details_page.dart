@@ -35,14 +35,14 @@ class _DetailsPageState extends State<DetailsPage> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryStrong,
+              color: AppColors.primaryStrong(context),
             ),
           ),
           SizedBox(height: 12),
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.lightGreen.withOpacity(0.2),
+              color: AppColors.lightGreen(context).withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: child,
@@ -56,9 +56,9 @@ class _DetailsPageState extends State<DetailsPage> {
     return Column(
       children: [
         CircleAvatar(
-          backgroundColor: AppColors.primary.withOpacity(0.15),
+          backgroundColor: AppColors.primary(context).withOpacity(0.15),
           radius: 28,
-          child: Icon(icon, size: 28, color: AppColors.primary),
+          child: Icon(icon, size: 28, color: AppColors.primary(context)),
         ),
         SizedBox(height: 6),
         Text(
@@ -66,13 +66,16 @@ class _DetailsPageState extends State<DetailsPage> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: AppColors.textPrimary(context),
           ),
         ),
         SizedBox(height: 2),
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          style: TextStyle(
+            fontSize: 12,
+            color: AppColors.textSecondary(context),
+          ),
         ),
       ],
     );
@@ -92,18 +95,21 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget buildAltitudeColumn(IconData icon, String label, int value) {
     return Column(
       children: [
-        Icon(icon, color: AppColors.primary),
+        Icon(icon, color: AppColors.primary(context)),
         SizedBox(height: 4),
         Text(
           "$value m",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: AppColors.textPrimary(context),
           ),
         ),
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          style: TextStyle(
+            fontSize: 12,
+            color: AppColors.textSecondary(context),
+          ),
         ),
       ],
     );
@@ -115,12 +121,12 @@ class _DetailsPageState extends State<DetailsPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: AppColors.primary),
+          Icon(icon, color: AppColors.primary(context)),
           SizedBox(width: 8),
           Flexible(
             child: Text(
               text,
-              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+              style: TextStyle(fontSize: 16, color: AppColors.textPrimary(context)),
             ),
           ),
         ],
@@ -137,12 +143,12 @@ class _DetailsPageState extends State<DetailsPage> {
             (item) => Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.secondaryStrong,
+                color: AppColors.secondaryStrong(context),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 item.toString(),
-                style: TextStyle(fontSize: 14, color: AppColors.textThird),
+                style: TextStyle(fontSize: 14, color: AppColors.textThird(context)),
               ),
             ),
           )
@@ -153,13 +159,13 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.primaryStrong,
-        iconTheme: IconThemeData(color: AppColors.textThird),
+        backgroundColor: AppColors.primaryStrong(context),
+        iconTheme: IconThemeData(color: AppColors.textThird(context)),
         title: Text(
           "Detalhes do Ponto",
-          style: TextStyle(fontSize: 18, color: AppColors.textThird),
+          style: TextStyle(fontSize: 18, color: AppColors.textThird(context)),
         ),
       ),
       body: FutureBuilder<AttractionDependence>(
@@ -173,7 +179,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(color: AppColors.primaryStrong),
+              child: CircularProgressIndicator(color: AppColors.primaryStrong(context)),
             );
           }
 
@@ -205,7 +211,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.black.withOpacity(0.15),
+                              AppColors.black(context).withOpacity(0.15),
                               Colors.transparent,
                             ],
                             begin: Alignment.bottomCenter,
@@ -222,11 +228,11 @@ class _DetailsPageState extends State<DetailsPage> {
                   child: Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.lightOrangeOpacity,
+                      color: AppColors.lightOrangeOpacity(context),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.textPrimary.withOpacity(0.1),
+                          color: AppColors.textPrimary(context).withOpacity(0.1),
                           blurRadius: 6,
                           offset: Offset(0, 3),
                         ),
@@ -241,7 +247,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primaryStrong,
+                              color: AppColors.primaryStrong(context),
                             ),
                           ),
                         ),
@@ -251,7 +257,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             Icon(
                               Icons.location_on,
                               size: 25,
-                              color: AppColors.primary,
+                              color: AppColors.primary(context),
                             ),
                             SizedBox(width: 8),
                             Expanded(
@@ -269,7 +275,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     a.municipio,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.textSecondary(context),
                                     ),
                                   ),
                                 ],

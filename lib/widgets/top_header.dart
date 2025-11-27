@@ -12,14 +12,14 @@ class TopHeader extends StatelessWidget {
       width: double.infinity,
       height: 170,
       decoration: BoxDecoration(
-        color: AppColors.secondaryStrong,
+        color: AppColors.secondaryStrong(context),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.25),
+            color: AppColors.primary(context).withOpacity(0.25),
             blurRadius: 8,
             offset: Offset(0, 4),
           ),
@@ -32,10 +32,10 @@ class TopHeader extends StatelessWidget {
         style: TextStyle(
           fontSize: 30,
           fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          color: AppColors.primary(context),
           shadows: [
             Shadow(
-              color: AppColors.black.withOpacity(0.15),
+              color: AppColors.black(context).withOpacity(0.15),
               offset: Offset(1, 1),
               blurRadius: 2,
             ),

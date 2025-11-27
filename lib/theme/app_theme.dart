@@ -1,13 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tcc_project/theme/app_colors.dart';
+import 'app_colors_light.dart';
+import 'app_colors_dark.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      textTheme: GoogleFonts.comfortaaTextTheme(),
-      colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-      scaffoldBackgroundColor: AppColors.background
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColorsLight.background,
+      textTheme: GoogleFonts.comfortaaTextTheme().apply(
+        bodyColor: AppColorsLight.textPrimary,
+        displayColor: AppColorsLight.textPrimary,
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColorsLight.primary,
+        brightness: Brightness.light,
+      ),
+    );
+  }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColorsDark.background,
+      textTheme: GoogleFonts.comfortaaTextTheme(
+        ThemeData.dark().textTheme,
+      ).apply(
+        bodyColor: AppColorsDark.textPrimary,
+        displayColor: AppColorsDark.textPrimary,
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColorsDark.primary,
+        brightness: Brightness.dark,
+      ),
     );
   }
 }

@@ -1,24 +1,54 @@
 import 'package:flutter/material.dart';
+import 'app_colors_light.dart';
+import 'app_colors_dark.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFFE6C17D);
-  static const Color primaryStrong = Color(0xFFDB902C);
-  static const Color secondary = Color(0xFF7AA88D);
-  static const Color secondaryStrong = Color(0xFF4A7C59);
+  static bool _isDark(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
 
-  static const Color lightGreen = Color(0xFFA3D3B0);
-  static const Color lightOrange = Color(0xFFF8D6A0);
-  static const Color earthBrown = Color(0xFFB89C7F);
+  static Color primary(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.primary : AppColorsLight.primary;
 
-  static const Color background = Color(0xFFFAF9F4);
-  static const Color textPrimary = Color(0xFF3A3A3A);
-  static const Color textSecondary = Color(0xFF7D7D7D);
-  static const Color textThird = Color(0xFFFFFFFF);
-  static const Color border = Color(0xFFE3E3E3);
+  static Color primaryStrong(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.primaryStrong : AppColorsLight.primaryStrong;
 
-  static const Color black = Color(0xFF000000);
-  static const Color white = Color(0xFFFFFFFF);
+  static Color secondary(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.secondary : AppColorsLight.secondary;
 
-  static Color lightOrangeOpacity =
-      const Color(0xFFF8D6A0).withOpacity(0.3);
+  static Color secondaryStrong(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.secondaryStrong : AppColorsLight.secondaryStrong;
+
+  static Color lightGreen(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.lightGreen : AppColorsLight.lightGreen;
+
+  static Color lightOrange(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.lightOrange : AppColorsLight.lightOrange;
+
+  static Color earthBrown(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.earthBrown : AppColorsLight.earthBrown;
+
+  static Color lightOrangeOpacity(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.lightOrangeOpacity : AppColorsLight.lightOrangeOpacity;
+
+  static Color background(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.background : AppColorsLight.background;
+
+  static Color border(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.border : AppColorsLight.border;
+
+  static Color textPrimary(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.textPrimary : AppColorsLight.textPrimary;
+
+  static Color textSecondary(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.textSecondary : AppColorsLight.textSecondary;
+
+  static Color textThird(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.textThird : AppColorsLight.textThird;
+
+  static Color black(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.black : AppColorsLight.black;
+
+  static Color white(BuildContext context) =>
+      _isDark(context) ? AppColorsDark.white : AppColorsLight.white;
 }

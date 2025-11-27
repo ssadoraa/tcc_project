@@ -12,25 +12,29 @@ class InfosPage extends StatefulWidget {
 }
 
 class _InfosPageState extends State<InfosPage> {
-  final List<Map<String, dynamic>> options = [
-    {
-      "title": "Contato de Guias do Parque",
-      "icon": Icons.phone_iphone,
-      "page": GuidesContact(),
-      "color": AppColors.lightGreen,
-    },
-    {
-      "title": "Eventos do Parque",
-      "icon": Icons.celebration_rounded,
-      "page": Events(),
-      "color": AppColors.lightOrangeOpacity,
-    },
-  ];
+  List<Map<String, dynamic>> getOptions(BuildContext context) {
+    return [
+      {
+        "title": "Contato de Guias do Parque",
+        "icon": Icons.phone_iphone,
+        "page": GuidesContact(),
+        "color": AppColors.lightGreen(context),
+      },
+      {
+        "title": "Eventos do Parque",
+        "icon": Icons.celebration_rounded,
+        "page": Events(),
+        "color": AppColors.lightGreen(context),
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final options = getOptions(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
@@ -57,11 +61,11 @@ class _InfosPageState extends State<InfosPage> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: option["color"],
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.textPrimary.withOpacity(0.15),
+                        color: AppColors.textPrimary(context).withOpacity(0.15),
                         offset: Offset(0, 6),
                         blurRadius: 12,
                       ),
@@ -72,11 +76,11 @@ class _InfosPageState extends State<InfosPage> {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundColor: AppColors.white,
+                        backgroundColor: AppColors.white(context),
                         child: Icon(
                           option["icon"],
                           size: 32,
-                          color: AppColors.primaryStrong,
+                          color: AppColors.primaryStrong(context),
                         ),
                       ),
                       SizedBox(height: 12),
@@ -87,7 +91,7 @@ class _InfosPageState extends State<InfosPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textPrimary(context),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -105,8 +109,8 @@ class _InfosPageState extends State<InfosPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.secondary.withOpacity(0.8),
-                  AppColors.secondary,
+                  AppColors.secondary(context).withOpacity(0.8),
+                  AppColors.secondary(context),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -114,7 +118,7 @@ class _InfosPageState extends State<InfosPage> {
               borderRadius: BorderRadius.circular(26),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.textPrimary.withOpacity(0.12),
+                  color: AppColors.textPrimary(context).withOpacity(0.12),
                   blurRadius: 18,
                   offset: Offset(0, 6),
                 ),
@@ -125,18 +129,18 @@ class _InfosPageState extends State<InfosPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _line(),
+                    _line(context),
                     SizedBox(width: 10),
                     Text(
                       "Curiosidades",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textPrimary(context),
                       ),
                     ),
                     SizedBox(width: 10),
-                    _line(),
+                    _line(context),
                   ],
                 ),
                 SizedBox(height: 22),
@@ -149,12 +153,12 @@ class _InfosPageState extends State<InfosPage> {
     );
   }
 
-  Widget _line() {
+  Widget _line(BuildContext context) {
     return Container(
       height: 2,
       width: 35,
       decoration: BoxDecoration(
-        color: AppColors.primaryStrong,
+        color: AppColors.primaryStrong(context),
         borderRadius: BorderRadius.circular(1),
       ),
     );
