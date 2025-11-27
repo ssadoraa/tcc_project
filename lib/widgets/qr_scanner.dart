@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tcc_project/pages/details_page.dart';
 import 'package:tcc_project/services/qr_service.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 import 'package:confetti/confetti.dart';
@@ -26,7 +27,9 @@ class _QRScannerPageState extends State<QRScannerPage>
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
-    )..repeat(reverse: true);
+    );
+
+    _animationController.repeat(reverse: true);
 
     _animation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
@@ -53,6 +56,9 @@ class _QRScannerPageState extends State<QRScannerPage>
     if (codeLido == null) return;
 
     _isProcessing = true;
+
+    await _cameraController.stop();
+    _animationController.stop();
 
     final result = await _qrService.unlockAttraction(userId, codeLido);
     final String msg = result["msg"];
@@ -111,7 +117,22 @@ class _QRScannerPageState extends State<QRScannerPage>
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pop(context);
+
+                      if (msg == "QR Code inválido") {
+                        _isProcessing = false;
+                        return;
+                      }
+
+                      if (!isNew) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DetailsPage(attractionId: codeLido),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: AppColors.background,
@@ -122,7 +143,11 @@ class _QRScannerPageState extends State<QRScannerPage>
                       ),
                     ),
                     child: Text(
-                      "Voltar",
+                      msg == "QR Code inválido"
+                          ? "Tentar novamente"
+                          : !isNew
+                          ? "Ver detalhes"
+                          : "Continuar",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -147,6 +172,9 @@ class _QRScannerPageState extends State<QRScannerPage>
         ),
       ),
     );
+
+    await _cameraController.start();
+    _animationController.repeat(reverse: true);
     _isProcessing = false;
   }
 

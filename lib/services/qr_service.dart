@@ -18,7 +18,7 @@ class QrService {
           .get();
 
       if (query.docs.isEmpty) {
-        return {"msg": "QR inválido. Tente novamente.", "isNew": false};
+        return {"msg": "QR Code inválido", "isNew": false};
       }
 
       final attractionDoc = query.docs.first;
