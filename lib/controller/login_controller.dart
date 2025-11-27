@@ -30,7 +30,6 @@ class LoginController extends ChangeNotifier {
 
   String get titulo => isLogin ? 'Entrar' : 'Registre-se';
   String get botao => isLogin ? 'Entrar' : 'Registrar';
-  String get toggleButton => isLogin ? 'Ainda não possui uma conta? Registre-se' : 'Já tem conta? Login';
 
   void setFormAction(bool login) {
     isLogin = login;
@@ -47,8 +46,14 @@ class LoginController extends ChangeNotifier {
     try {
       await _authService.login(email.text, senha.text);
     } catch (e) {
+      String message = 'Erro desconhecido';
+
+      if (e is AuthException) {
+        message = e.message;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e is Exception ? e.toString() : 'Erro desconhecido')),
+        SnackBar(content: Text(message)),
       );
     } finally {
       loading = false;
@@ -69,20 +74,24 @@ class LoginController extends ChangeNotifier {
         dataNascimento: dataNascimento.text,
         pais: pais.text,
         estado: estadoSelecionado != null
-            ? estados
-                .firstWhere((e) => e['id'] == estadoSelecionado)['sigla']
+            ? estados.firstWhere((e) => e['id'] == estadoSelecionado)['sigla']
             : '',
         cidade: cidadeSelecionada != null
-            ? cidades
-                .firstWhere((c) => c['id'] == cidadeSelecionada)['nome']
+            ? cidades.firstWhere((c) => c['id'] == cidadeSelecionada)['nome']
             : '',
       );
 
       await _authService.register(email.text, senha.text, usuario);
       clearControllers();
     } catch (e) {
+      String message = 'Erro desconhecido';
+
+      if (e is AuthException) {
+        message = e.message;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e is Exception ? e.toString() : 'Erro desconhecido')),
+        SnackBar(content: Text(message)),
       );
     } finally {
       loading = false;

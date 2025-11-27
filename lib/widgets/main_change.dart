@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_project/pages/attractions_page.dart';
-import 'package:tcc_project/pages/config_page.dart';
+import 'package:tcc_project/pages/setting_page.dart';
 import 'package:tcc_project/pages/infos_page.dart';
 import 'package:tcc_project/pages/map_page.dart';
 import 'package:tcc_project/theme/app_colors.dart';
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return InfosPage();
       case 3:
-        return ConfigPage();
+        return SettingPage();
       default:
         return MapPage();
     }
@@ -53,10 +53,11 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _getPage(itemSelecionado),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.earthBrown.withAlpha(250),
         currentIndex: itemSelecionado,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
+        selectedItemColor: AppColors.primaryStrong,
+        unselectedItemColor: AppColors.primary,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         onTap: (index) {
           setState(() {
@@ -65,14 +66,8 @@ class _HomePageState extends State<HomePage> {
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt_rounded),
-            label: 'Missões',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info_outline),
-            label: 'Infos',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.list_alt_rounded), label: 'Pontos'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Infos'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Config'),
         ],
       ),

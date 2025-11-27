@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tcc_project/model/usuario.dart';
 
 class AuthException implements Exception {
-  String message;
+  final String message;
   AuthException(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class AuthService extends ChangeNotifier {

@@ -5,14 +5,14 @@ import 'package:tcc_project/services/auth_service.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher_string.dart' as url_launcher;
 
-class ConfigPage extends StatefulWidget {
-  ConfigPage({Key? key}) : super(key: key);
+class SettingPage extends StatefulWidget {
+  SettingPage({Key? key}) : super(key: key);
 
   @override
-  State<ConfigPage> createState() => _ConfigPageState();
+  State<SettingPage> createState() => _SettingPageState();
 }
 
-class _ConfigPageState extends State<ConfigPage> {
+class _SettingPageState extends State<SettingPage> {
   bool darkMode = false;
   bool notifications = true;
 
@@ -111,66 +111,157 @@ class _ConfigPageState extends State<ConfigPage> {
     final novaController = TextEditingController();
     final confirmarController = TextEditingController();
 
+    String? errorMessage;
+
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 24),
-          title: Text("Alterar Senha"),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Column(
-              children: [
-                _buildPasswordField("Senha atual", atualController),
-                SizedBox(height: 12),
-                _buildPasswordField("Nova senha", novaController),
-                SizedBox(height: 12),
-                _buildPasswordField(
-                  "Confirmar nova senha",
-                  confirmarController,
-                ),
-              ],
-            ),
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancelar"),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (novaController.text != confirmarController.text) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("As senhas não coincidem")),
-                  );
-                  return;
-                }
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                padding: EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                        child: Text(
+                          "Alterar Senha",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryStrong,
+                          ),
+                        ),
+                      ),
 
-                try {
-                  await context.read<AuthService>().changePassword(
-                    atualController.text,
-                    novaController.text,
-                  );
+                      SizedBox(height: 16),
 
-                  Navigator.pop(context);
+                      if (errorMessage != null)
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12),
+                          margin: EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.red.shade300),
+                          ),
+                          child: Text(
+                            errorMessage!,
+                            style: TextStyle(
+                              color: Colors.red.shade800,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Senha alterada com sucesso!"),
-                    ),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(e.toString())));
-                }
-              },
-              child: Text("Salvar"),
-            ),
-          ],
+                      Text(
+                        "Senha atual",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 6),
+                      _styledPasswordField(atualController),
+
+                      SizedBox(height: 16),
+
+                      Text(
+                        "Nova senha",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 6),
+                      _styledPasswordField(novaController),
+
+                      SizedBox(height: 16),
+
+                      Text(
+                        "Confirmar nova senha",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 6),
+                      _styledPasswordField(confirmarController),
+
+                      SizedBox(height: 24),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancelar"),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (novaController.text !=
+                                  confirmarController.text) {
+                                setState(() {
+                                  errorMessage = "As senhas não coincidem.";
+                                });
+                                return;
+                              }
+
+                              try {
+                                await context
+                                    .read<AuthService>()
+                                    .changePassword(
+                                      atualController.text,
+                                      novaController.text,
+                                    );
+
+                                Navigator.pop(context);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Senha alterada com sucesso!",
+                                    ),
+                                  ),
+                                );
+                              } catch (e) {
+                                setState(() {
+                                  errorMessage = e.toString();
+                                });
+                              }
+                            },
+                            child: Text("Salvar"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
+    );
+  }
+
+  Widget _styledPasswordField(TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      obscureText: true,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.grey.shade100,
+        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade400),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primaryStrong, width: 1.5),
+        ),
+      ),
     );
   }
 
@@ -192,9 +283,9 @@ class _ConfigPageState extends State<ConfigPage> {
           ),
           content: SingleChildScrollView(
             child: Text(
-              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano, no norte do Rio de Janeiro..."
-              "\n\nDentro do app, você encontra um mapa com trilhas georreferenciadas, localização em tempo real e pontos marcados com QR Codes..."
-              "\n\nA ideia é transformar a experiência no parque em algo envolvente e acessível, usando elementos de gamificação...",
+              "O DesenGo é um aplicativo criado para valorizar e aproximar as pessoas do Parque Estadual do Desengano, no norte do Rio de Janeiro. Ele foi desenvolvido como parte de um projeto que une tecnologia, turismo e educação ambiental para tornar a visita ao parque mais interativa, divertida e informativa.\n\n"
+              "Dentro do app, você encontra um mapa com trilhas georreferenciadas, localização em tempo real e pontos marcados com QR Codes espalhados pelo parque. Ao escanear esses códigos, novas figurinhas virtuais e conteúdos educativos sobre a fauna, a flora e curiosidades locais são desbloqueados.\n\n"
+              "A ideia é transformar a experiência no parque em algo envolvente e acessível, usando elementos de gamificação para incentivar a exploração consciente e o cuidado com o meio ambiente. O DesenGo foi criado para ajudar visitantes, estudantes e moradores a conhecerem melhor o Desengano, valorizando sua história, biodiversidade e importância para a região.",
               style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
             ),
           ),

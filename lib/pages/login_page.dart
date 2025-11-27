@@ -34,6 +34,15 @@ class LoginPage extends StatelessWidget {
                       controller: controller.email,
                       style: TextStyle(color: AppColors.textPrimary),
                       decoration: _inputDecoration(hint: 'Digite seu email'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Informe o email';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Email inválido';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 20),
                     _label("Senha"),
@@ -42,6 +51,15 @@ class LoginPage extends StatelessWidget {
                       obscureText: true,
                       style: TextStyle(color: AppColors.textPrimary),
                       decoration: _inputDecoration(hint: 'Digite sua senha'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Informe a senha';
+                        }
+                        if (value.length < 6) {
+                          return 'A senha deve ter no mínimo 6 caracteres';
+                        }
+                        return null;
+                      },
                     ),
                     if (!controller.isLogin) ...[
                       SizedBox(height: 20),
@@ -53,6 +71,15 @@ class LoginPage extends StatelessWidget {
                         decoration: _inputDecoration(
                           hint: 'Confirme sua senha',
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Confirme sua senha';
+                          }
+                          if (value != controller.senha.text) {
+                            return 'As senhas não coincidem';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20),
                       _label("Nome completo"),
@@ -62,6 +89,15 @@ class LoginPage extends StatelessWidget {
                         decoration: _inputDecoration(
                           hint: 'Digite seu nome completo',
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Informe seu nome';
+                          }
+                          if (value.length < 3) {
+                            return 'Nome muito curto';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20),
                       _label("Data de nascimento"),
@@ -76,6 +112,12 @@ class LoginPage extends StatelessWidget {
                             color: AppColors.lightGreen,
                           ),
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Selecione sua data de nascimento';
+                          }
+                          return null;
+                        },
                         onTap: () async {
                           FocusScope.of(context).requestFocus(FocusNode());
                           DateTime? pickedDate = await showDatePicker(
@@ -98,6 +140,12 @@ class LoginPage extends StatelessWidget {
                         readOnly: true,
                         style: TextStyle(color: AppColors.textPrimary),
                         decoration: _inputDecoration(hint: 'Selecione um país'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Selecione um país';
+                          }
+                          return null;
+                        },
                         onTap: () {
                           showCountryPicker(
                             context: context,
@@ -121,17 +169,23 @@ class LoginPage extends StatelessWidget {
                         _label("Estado"),
                         DropdownButtonFormField<int>(
                           value: controller.estadoSelecionado,
-                          dropdownColor: AppColors.lightOrangeOpacity
-                              .withOpacity(0.3),
                           decoration: _inputDecoration(
                             hint: 'Selecione um estado',
                           ),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Selecione um estado';
+                            }
+                            return null;
+                          },
                           items: controller.estados.map((estado) {
                             return DropdownMenuItem<int>(
                               value: estado['id'],
                               child: Text(
                                 estado['sigla'],
-                                style: TextStyle(color: AppColors.textPrimary),
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                ),
                               ),
                             );
                           }).toList(),
@@ -145,17 +199,23 @@ class LoginPage extends StatelessWidget {
                         _label("Cidade"),
                         DropdownButtonFormField<int>(
                           value: controller.cidadeSelecionada,
-                          dropdownColor: AppColors.lightOrangeOpacity
-                              .withOpacity(0.3),
                           decoration: _inputDecoration(
                             hint: 'Selecione uma cidade',
                           ),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Selecione uma cidade';
+                            }
+                            return null;
+                          },
                           items: controller.cidades.map((cidade) {
                             return DropdownMenuItem<int>(
                               value: cidade['id'],
                               child: Text(
                                 cidade['nome'],
-                                style: TextStyle(color: AppColors.textPrimary),
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                ),
                               ),
                             );
                           }).toList(),
