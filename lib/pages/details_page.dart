@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tcc_project/controller/attraction_controller.dart';
+import 'package:tcc_project/model/attraction_dependence.dart';
+import 'package:tcc_project/services/attraction_service.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
   final String attractionId;
 
   DetailsPage({Key? key, required this.attractionId}) : super(key: key);
+
+  @override
+  _DetailsPageState createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  late final AttractionController controller;
+  late final Future<AttractionDependence> attractionFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AttractionController(AttractionService());
+    attractionFuture = controller.getAttractionDependence(widget.attractionId);
+  }
 
   Widget buildSection(String title, Widget child) {
     return Padding(
@@ -124,7 +141,7 @@ class DetailsPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                item,
+                item.toString(),
                 style: TextStyle(fontSize: 14, color: AppColors.textThird),
               ),
             ),
@@ -145,45 +162,43 @@ class DetailsPage extends StatelessWidget {
           style: TextStyle(fontSize: 18, color: AppColors.textThird),
         ),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('attractions')
-            .doc(attractionId)
-            .get(),
+      body: FutureBuilder<AttractionDependence>(
+        future: attractionFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Erro ao carregar a atração: ${snapshot.error}"),
+            );
+          }
+
+          if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(color: AppColors.primaryStrong),
             );
           }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                "Erro: ${snapshot.error}",
-                style: TextStyle(color: AppColors.textPrimary),
-              ),
-            );
-          }
-
-          final data = snapshot.data!.data() as Map<String, dynamic>;
+          final a = snapshot.data!;
 
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(16),
-                  ),
                   child: Stack(
                     children: [
                       Image.network(
-                        data['image'] ??
-                            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                        a.image,
                         height: 250,
                         width: double.infinity,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.network(
+                            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60',
+                            height: 250,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                       Container(
                         height: 250,
@@ -196,16 +211,12 @@ class DetailsPage extends StatelessWidget {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                           ),
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(16),
-                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 16),
-
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
@@ -226,7 +237,7 @@ class DetailsPage extends StatelessWidget {
                       children: [
                         Center(
                           child: Text(
-                            data['titulo'] ?? '',
+                            a.titulo,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -236,7 +247,6 @@ class DetailsPage extends StatelessWidget {
                         ),
                         SizedBox(height: 12),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.location_on,
@@ -249,15 +259,14 @@ class DetailsPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    data['localizacao'] ?? '',
+                                    a.localizacao,
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                   Text(
-                                    data['municipio'] ?? '',
+                                    a.municipio,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppColors.textSecondary,
@@ -272,9 +281,7 @@ class DetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 16),
-
                 buildSection(
                   "Principais Informações",
                   Row(
@@ -282,55 +289,41 @@ class DetailsPage extends StatelessWidget {
                     children: [
                       buildMainInfo(
                         "Distância",
-                        "${data['distancia_km']} km",
+                        "${a.distanciaKm} km",
                         Icons.map,
                       ),
-                      buildMainInfo(
-                        "Tempo",
-                        data['tempo_estimado'],
-                        Icons.timer,
-                      ),
+                      buildMainInfo("Tempo", a.tempoEstimado, Icons.timer),
                       buildMainInfo(
                         "Dificuldade",
-                        data['dificuldade'] ?? "N/A",
+                        a.dificuldade,
                         Icons.directions_walk,
                       ),
                     ],
                   ),
                 ),
-
                 buildSection(
                   "Detalhes de Altitude",
                   Column(
                     children: [
                       buildAltitudeInfo(
-                        data['altitude_inicial'],
-                        data['altitude_maxima'],
-                        data['altitude_final'],
+                        a.altitudeInicial,
+                        a.altitudeMaxima,
+                        a.altitudeFinal,
                       ),
                       SizedBox(height: 12),
                       buildDetailRow(
                         Icons.show_chart,
-                        "Ganho de altitude: ${data['ganho_altitude']} m",
+                        "Ganho de altitude: ${a.ganhoAltitude} m",
                       ),
                     ],
                   ),
                 ),
-
-                if (data['descricao'] != null)
+                if (a.descricao.isNotEmpty)
                   buildSection(
                     "Descrição",
-                    Text(
-                      data['descricao'],
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
+                    Text(a.descricao, style: TextStyle(fontSize: 16)),
                   ),
-
-                if (data['flora_relevante'] != null ||
-                    data['atrativos'] != null)
+                if (a.floraRelevante.isNotEmpty || a.atrativos.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 12.0,
@@ -339,37 +332,29 @@ class DetailsPage extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (data['flora_relevante'] != null)
+                        if (a.floraRelevante.isNotEmpty)
                           Expanded(
                             child: buildSection(
                               "Flora",
-                              buildTagRow(data['flora_relevante']),
+                              buildTagRow(a.floraRelevante),
                             ),
                           ),
                         SizedBox(width: 16),
-                        if (data['atrativos'] != null)
+                        if (a.atrativos.isNotEmpty)
                           Expanded(
                             child: buildSection(
                               "Atrativos",
-                              buildTagRow(data['atrativos']),
+                              buildTagRow(a.atrativos),
                             ),
                           ),
                       ],
                     ),
                   ),
-
-                if (data['historico'] != null)
+                if (a.historico.isNotEmpty)
                   buildSection(
                     "Curiosidade Histórica",
-                    Text(
-                      data['historico'],
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
+                    Text(a.historico, style: TextStyle(fontSize: 16)),
                   ),
-
                 SizedBox(height: 32),
               ],
             ),

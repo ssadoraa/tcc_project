@@ -67,7 +67,7 @@ class Events extends StatelessWidget {
               final title = event['titulo'] ?? 'Evento sem título';
               final imageUrl =
                   event['imagemUrl'] ??
-                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60';
+                    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60';
 
               Timestamp? timestamp = event['data'];
               String formattedDate = 'Data não informada';

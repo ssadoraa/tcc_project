@@ -412,14 +412,6 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildPasswordField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      obscureText: true,
-      decoration: InputDecoration(labelText: label),
-    );
-  }
-
   Widget _socialIcon(String assetPath, String url) {
     return InkWell(
       onTap: () => url_launcher.launchUrlString(url),

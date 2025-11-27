@@ -1,26 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tcc_project/pages/details_page.dart';
+import 'package:tcc_project/controller/attraction_controller.dart';
+import 'package:tcc_project/model/attraction.dart';
 import 'package:tcc_project/services/attraction_service.dart';
-import 'package:tcc_project/theme/app_colors.dart';
 import 'package:tcc_project/widgets/qr_scanner.dart';
+import 'package:tcc_project/pages/details_page.dart';
+import 'package:tcc_project/theme/app_colors.dart';
 
 class AttractionPage extends StatefulWidget {
-  AttractionPage({Key? key}) : super(key: key);
-
   @override
   _AttractionPageState createState() => _AttractionPageState();
 }
 
 class _AttractionPageState extends State<AttractionPage> {
   final String userId = FirebaseAuth.instance.currentUser!.uid;
-  final AttractionService _attractionservice = AttractionService();
-  final TextEditingController _searchController = TextEditingController();
+
+  late final AttractionController controller;
+  final searchCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AttractionController(AttractionService());
+  }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    searchCtrl.dispose();
     super.dispose();
   }
 
@@ -31,76 +37,54 @@ class _AttractionPageState extends State<AttractionPage> {
       body: Column(
         children: [
           SizedBox(height: 15),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (_) => setState(() {}),
-              decoration: InputDecoration(
-                hintText: 'Pesquise pelo lugar...',
-                hintStyle: TextStyle(color: AppColors.textSecondary),
-                prefixIcon: Icon(Icons.search, color: AppColors.primary),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: AppColors.lightOrangeOpacity,
-              ),
-            ),
-          ),
+          _buildSearchField(),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _attractionservice.getattractions(),
-              builder: (context, attractionsnapshot) {
-                if (!attractionsnapshot.hasData) {
+            child: StreamBuilder<List<Attraction>>(
+              stream: controller.getAttractions(),
+              builder: (context, attractionsSnap) {
+                if (!attractionsSnap.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                final attractions = attractionsnapshot.data!.docs;
+                final allAttractions = attractionsSnap.data!;
 
                 return StreamBuilder<Set<String>>(
-                  stream: _attractionservice.getunlockedAttractions(userId),
-                  builder: (context, unlockedSnapshot) {
-                    if (!unlockedSnapshot.hasData) {
+                  stream: controller.getUnlocked(userId),
+                  builder: (context, unlockedSnap) {
+                    if (!unlockedSnap.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
 
-                    final unlocked = unlockedSnapshot.data!;
-                    final searchQuery = _searchController.text
-                        .toLowerCase()
-                        .trim();
+                    final unlocked = unlockedSnap.data!;
 
-                    final filteredAttractions = attractions.where((attraction) {
-                      final data = attraction.data() as Map<String, dynamic>;
-                      final title = (data["titulo"] ?? "")
-                          .toString()
-                          .toLowerCase();
-                      return title.contains(searchQuery);
-                    }).toList();
+                    final filtered = controller.filter(
+                      allAttractions,
+                      searchCtrl.text,
+                    );
 
-                    final total = attractions.length;
-                    final unlockedCount = unlocked.length;
-                    final progress = total > 0 ? unlockedCount / total : 0.0;
+                    final progress = controller.getProgress(
+                      unlocked.length,
+                      allAttractions.length,
+                    );
 
                     return Column(
                       children: [
-                        _buildProgressBar(progress, unlockedCount, total),
+                        _buildProgress(
+                          progress,
+                          unlocked.length,
+                          allAttractions.length,
+                        ),
                         Expanded(
-                          child: filteredAttractions.isEmpty
+                          child: filtered.isEmpty
                               ? Center(
                                   child: Text(
-                                    'Nenhum ponto encontrado.',
+                                    "Nenhum ponto encontrado.",
                                     style: TextStyle(
                                       color: AppColors.textSecondary,
                                     ),
                                   ),
                                 )
-                              : _buildAttractionGrid(
-                                  context,
-                                  filteredAttractions,
-                                  unlocked,
-                                ),
+                              : _buildGrid(filtered, unlocked),
                         ),
                       ],
                     );
@@ -111,29 +95,31 @@ class _AttractionPageState extends State<AttractionPage> {
           ),
         ],
       ),
-      floatingActionButton: SizedBox(
-        height: 65,
-        width: 65,
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => QRScannerPage()),
-            );
-          },
-          shape: CircleBorder(),
-          backgroundColor: AppColors.secondaryStrong,
-          child: Icon(
-            Icons.qr_code_scanner,
-            size: 28,
-            color: AppColors.white,
+      floatingActionButton: _buildFAB(context),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        controller: searchCtrl,
+        onChanged: (_) => setState(() {}),
+        decoration: InputDecoration(
+          hintText: 'Pesquise pelo lugar...',
+          prefixIcon: Icon(Icons.search, color: AppColors.primary),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide.none,
           ),
+          filled: true,
+          fillColor: AppColors.lightOrangeOpacity,
         ),
       ),
     );
   }
 
-  Widget _buildProgressBar(double progress, int unlocked, int total) {
+  Widget _buildProgress(double progress, int unlocked, int total) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -152,14 +138,10 @@ class _AttractionPageState extends State<AttractionPage> {
           ),
           SizedBox(height: 5),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.centerRight,
             child: Text(
-              '$unlocked/$total',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+              "$unlocked/$total",
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -167,13 +149,9 @@ class _AttractionPageState extends State<AttractionPage> {
     );
   }
 
-  Widget _buildAttractionGrid(
-    BuildContext context,
-    List<QueryDocumentSnapshot> attractions,
-    Set<String> unlocked,
-  ) {
+  Widget _buildGrid(List<Attraction> list, Set<String> unlocked) {
     return GridView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.all(20),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: (MediaQuery.of(context).size.width / 150).floor().clamp(
           2,
@@ -181,43 +159,32 @@ class _AttractionPageState extends State<AttractionPage> {
         ),
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: 1,
       ),
-      itemCount: attractions.length,
-      itemBuilder: (context, index) {
-        final attraction = attractions[index];
-        final data = attraction.data() as Map<String, dynamic>;
-        final isUnlocked = unlocked.contains(attraction.id);
+      itemCount: list.length,
+      itemBuilder: (context, i) {
+        final a = list[i];
+        final isUnlocked = unlocked.contains(a.id);
 
-        return _buildAttractionCard(context, attraction.id, data, isUnlocked);
+        return _buildCard(a, isUnlocked);
       },
     );
   }
 
-  Widget _buildAttractionCard(
-    BuildContext context,
-    String attractionId,
-    Map<String, dynamic> data,
-    bool isUnlocked,
-  ) {
-    final cardColor = isUnlocked
-        ? AppColors.background
-        : AppColors.lightOrangeOpacity.withOpacity(0.4);
-
+  Widget _buildCard(Attraction a, bool isUnlocked) {
     return InkWell(
-      borderRadius: BorderRadius.circular(20),
       onTap: isUnlocked
-          ? () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailsPage(attractionId: attractionId),
-                ),
-              );
-            }
+          ? () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DetailsPage(attractionId: a.id),
+              ),
+            )
           : null,
+      borderRadius: BorderRadius.circular(20),
       child: Card(
-        color: cardColor,
+        color: isUnlocked
+            ? AppColors.background
+            : AppColors.lightOrangeOpacity.withOpacity(0.4),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Stack(
           children: [
@@ -229,58 +196,81 @@ class _AttractionPageState extends State<AttractionPage> {
                       top: Radius.circular(12),
                     ),
                     child: Image.network(
-                      data["image"] ??
-                          "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+                      a.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      color: isUnlocked ? null : AppColors.black.withOpacity(0.4),
+                      color: isUnlocked ? null : Colors.black.withOpacity(0.4),
                       colorBlendMode: isUnlocked ? null : BlendMode.darken,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network(
+                          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          color: isUnlocked
+                              ? null
+                              : Colors.black.withOpacity(0.4),
+                          colorBlendMode: isUnlocked ? null : BlendMode.darken,
+                        );
+                      },
                     ),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8),
-                  child: Text(
-                    data["titulo"] ?? '',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isUnlocked
-                          ? AppColors.textPrimary
-                          : AppColors.textSecondary,
-                    ),
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
+                  child: Column(
+                    children: [
+                      Text(
+                        a.titulo,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isUnlocked
+                              ? AppColors.textPrimary
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                      if (isUnlocked)
+                        Padding(
+                          padding: EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            "Clique para ver detalhes",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    "Clique para ver detalhes",
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
+                SizedBox(height: 4),
               ],
             ),
             if (!isUnlocked)
               Center(
-                child: Icon(
-                  Icons.lock,
-                  size: 40,
-                  color: AppColors.textThird,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: AppColors.black.withOpacity(0.4),
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
+                child: Icon(Icons.lock, size: 40, color: AppColors.textThird),
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFAB(BuildContext context) {
+    return SizedBox(
+      height: 65,
+      width: 65,
+      child: FloatingActionButton(
+        backgroundColor: AppColors.secondaryStrong,
+        shape: CircleBorder(),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => QRScannerPage()),
+          );
+        },
+        child: Icon(Icons.qr_code_scanner, size: 28, color: AppColors.white),
       ),
     );
   }

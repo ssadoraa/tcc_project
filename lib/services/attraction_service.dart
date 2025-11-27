@@ -6,16 +6,20 @@ class AttractionService {
   AttractionService({FirebaseFirestore? firestore})
     : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot> getattractions() {
+  Stream<QuerySnapshot> getAttractions() {
     return _firestore.collection('attractions').orderBy('titulo').snapshots();
   }
 
-  Stream<Set<String>> getunlockedAttractions(String userId) {
+  Stream<Set<String>> getUnlockedAttractions(String userId) {
     return _firestore
         .collection('users')
         .doc(userId)
         .collection('unlockedAttractions')
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((d) => d.id).toSet());
+        .map((snap) => snap.docs.map((d) => d.id).toSet());
+  }
+
+  Future<DocumentSnapshot> getAttractionById(String id) {
+    return _firestore.collection('attractions').doc(id).get();
   }
 }
