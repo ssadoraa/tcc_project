@@ -163,7 +163,7 @@ class EventCard extends StatelessWidget {
                           horizontal: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.earthBrown(context).withOpacity(0.9),
+                          color: Colors.redAccent.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(

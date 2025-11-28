@@ -93,7 +93,10 @@ class LoginPage extends StatelessWidget {
                       TextFormField(
                         controller: controller.nome,
                         style: TextStyle(color: AppColors.textPrimary(context)),
-                        decoration: _inputDecoration(context, hint: 'Digite seu nome completo'),
+                        decoration: _inputDecoration(
+                          context,
+                          hint: 'Digite seu nome completo',
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Informe seu nome';
@@ -115,7 +118,7 @@ class LoginPage extends StatelessWidget {
                           hint: 'Selecione sua data de nascimento',
                           suffixIcon: Icon(
                             Icons.calendar_month,
-                            color: AppColors.lightGreen(context),
+                            color: AppColors.primaryStrong(context),
                           ),
                         ),
                         validator: (value) {
@@ -178,7 +181,10 @@ class LoginPage extends StatelessWidget {
                         _label(context, "Estado"),
                         DropdownButtonFormField<int>(
                           value: controller.estadoSelecionado,
-                          decoration: _inputDecoration(context, hint: 'Selecione um estado'),
+                          decoration: _inputDecoration(
+                            context,
+                            hint: 'Selecione um estado',
+                          ),
                           validator: (value) {
                             if (value == null) {
                               return 'Selecione um estado';
@@ -206,7 +212,10 @@ class LoginPage extends StatelessWidget {
                         _label(context, "Cidade"),
                         DropdownButtonFormField<int>(
                           value: controller.cidadeSelecionada,
-                          decoration: _inputDecoration(context, hint: 'Selecione uma cidade'),
+                          decoration: _inputDecoration(
+                            context,
+                            hint: 'Selecione uma cidade',
+                          ),
                           validator: (value) {
                             if (value == null) {
                               return 'Selecione uma cidade';
@@ -262,7 +271,19 @@ class LoginPage extends StatelessWidget {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(controller.botao),
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    controller.isLogin
+                                        ? Icons.login
+                                        : Icons.person_add,
+                                    color: AppColors.background(context),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(controller.botao),
+                                ],
+                              ),
                       ),
                     ),
                     SizedBox(height: 75),

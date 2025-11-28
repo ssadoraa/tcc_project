@@ -161,7 +161,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.primaryStrong(context),
+        backgroundColor: AppColors.lightOrange(context),
         iconTheme: IconThemeData(color: AppColors.textThird(context)),
         title: Text(
           "Detalhes do Ponto",

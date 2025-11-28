@@ -63,8 +63,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter_native_splash:
-  color: "#D9D9D9"
-  image: assets/images/LogoImage.png
+  color: "#4A7C59"
+  image: assets/images/logo-image.png
   android: true
 
 # For information on the generic Dart part of this file, see the

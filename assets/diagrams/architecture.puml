@@ -1,0 +1,68 @@
+@startuml
+title **Arquitetura Geral do Sistema – DesenGo**
+
+skinparam shadowing false
+skinparam linetype ortho
+skinparam dpi 150
+skinparam roundCorner 12
+skinparam ArrowColor #444444
+skinparam defaultFontColor #222222
+skinparam packageStyle rectangle
+
+left to right direction
+
+skinparam package {
+    BackgroundColor<<UI>> #D8EAFE
+    BorderColor<<UI>> #2F6DB0
+
+    BackgroundColor<<Logic>> #DFF6DD
+    BorderColor<<Logic>> #3D8B3D
+
+    BackgroundColor<<Services>> #FFF6D5
+    BorderColor<<Services>> #E0982C
+}
+
+skinparam rectangle {
+    BackgroundColor #FFFFFF
+    BorderColor #555555
+    FontColor #111111
+}
+
+' -------------------- CAMADA DE APRESENTAÇÃO --------------------
+package "📱 Camada de Apresentação (Front-End)" <<UI>> {
+    rectangle "Páginas (UI)\nTelas do aplicativo" as Pages
+    rectangle "Widgets\nComponentes reutilizáveis" as Widgets
+    rectangle "Tema\nCores e estilos" as Theme
+}
+
+' -------------------- CAMADA DE LÓGICA --------------------
+package "⚙️ Camada de Lógica de Aplicação" <<Logic>> {
+    rectangle "Controllers\nRegras de negócio" as Controllers
+    rectangle "Models\nEstruturas de dados" as Models
+}
+
+' -------------------- CAMADA DE SERVIÇOS --------------------
+package "☁️ Camada de Serviços (Back-End e Nuvem)" <<Services>> {
+    rectangle "Serviços de Backend\nAcesso ao Firebase e APIs" as Services
+}
+
+' -------------------- SERVIÇOS EXTERNOS --------------------
+package "🌐 Serviços Externos e APIs" {
+    rectangle "Firebase Authentication\nCloud Firestore\nFirebase Storage\nMapbox API" as External
+}
+
+' -------------------- RELACIONAMENTOS --------------------
+Pages --> Controllers : interação do usuário
+Widgets --> Controllers
+
+Controllers --> Models
+
+Controllers --> Services : chamadas de serviço
+Services --> External
+
+Theme --> Pages
+Theme --> Widgets
+
+Pages <- Services : retorno de dados
+
+@enduml
