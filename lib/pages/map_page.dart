@@ -12,40 +12,24 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  final controller = MapController();
-
-  final List<AttractionDependence> attractions = [
-    AttractionDependence(
-      id: '1',
-      qrCode: '',
-      titulo: 'Ponto 1',
-      image: '',
-      localizacao: 'Local A',
-      municipio: 'Cidade X',
-      tempoEstimado: '30 min',
-      dificuldade: 'Fácil',
-      descricao: 'Descrição do ponto 1',
-      distanciaKm: 1.2,
-      altitudeInicial: 100,
-      altitudeMaxima: 150,
-      altitudeFinal: 120,
-      ganhoAltitude: 50,
-      floraRelevante: ['Planta A', 'Planta B'],
-      atrativos: ['Cachoeira', 'Mirante'],
-      infraestrutura: ['Banheiro'],
-      agua: true,
-      condicaoTrilha: 'Boa',
-      recomendacao: 'Use tênis',
-      historico: 'História do local',
-      latitude: -21.959261,
-      longitude: -42.010313,
-    ),
-  ];
+  final MapController controller = MapController();
+  bool isLoading = true;
 
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _onMapCreated(MapboxMap map) async {
+    setState(() => isLoading = true);
+
+    await controller.initMap(
+      map,
+      onTapAttraction: (attraction) => showFixedPinSheet(attraction),
+    );
+
+    setState(() => isLoading = false);
   }
 
   void showFixedPinSheet(AttractionDependence attraction) {
@@ -62,7 +46,9 @@ class _MapPageState extends State<MapPage> {
             return Container(
               decoration: BoxDecoration(
                 color: AppColorsLight.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
               ),
               child: SingleChildScrollView(
                 controller: scrollController,
@@ -96,7 +82,6 @@ class _MapPageState extends State<MapPage> {
                               color: AppColorsLight.textSecondary,
                             ),
                           ),
-
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
@@ -107,16 +92,11 @@ class _MapPageState extends State<MapPage> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: AppColorsLight.textPrimary,
                             ),
                           ),
                           SizedBox(height: 4),
                           Text(
                             "${attraction.localizacao} - ${attraction.municipio}",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColorsLight.textSecondary,
-                            ),
                           ),
                           SizedBox(height: 16),
                           SingleChildScrollView(
@@ -143,13 +123,9 @@ class _MapPageState extends State<MapPage> {
                               ],
                             ),
                           ),
-
                           SizedBox(height: 20),
-
                           _waterInfo(attraction.agua),
-
                           SizedBox(height: 20),
-
                           if (attraction.infraestrutura.isNotEmpty) ...[
                             Text("Infraestrutura", style: _sectionTitle()),
                             SizedBox(height: 4),
@@ -162,13 +138,21 @@ class _MapPageState extends State<MapPage> {
                             ),
                             SizedBox(height: 16),
                           ],
-
                           if (attraction.recomendacao.isNotEmpty) ...[
                             Text("Recomendação", style: _sectionTitle()),
                             SizedBox(height: 8),
-                            _recommendationTag(
-                              recomendacao: false,
-                              texto: attraction.recomendacao,
+                            _recommendationTag(false, attraction.recomendacao),
+                            SizedBox(height: 16),
+                          ],
+                          if (attraction.atrativos.isNotEmpty) ...[
+                            Text("Atrativos", style: _sectionTitle()),
+                            SizedBox(height: 4),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              children: attraction.atrativos
+                                  .map((a) => _tag(a))
+                                  .toList(),
                             ),
                             SizedBox(height: 16),
                           ],
@@ -182,86 +166,6 @@ class _MapPageState extends State<MapPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _recommendationTag({required bool recomendacao, String? texto}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: recomendacao
-            ? AppColorsLight.primaryStrong.withOpacity(0.15)
-            : AppColorsLight.lightGreen.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            recomendacao ? Icons.explore : Icons.directions_walk,
-            color: recomendacao
-                ? AppColorsLight.primaryStrong
-                : AppColorsLight.secondaryStrong,
-            size: 20,
-          ),
-          SizedBox(width: 6),
-          Text(
-            recomendacao ? "Guia recomendado" : "Autônomo",
-            style: TextStyle(
-              color: recomendacao
-                  ? AppColorsLight.primaryStrong
-                  : AppColorsLight.secondaryStrong,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          if (texto != null) ...[
-            SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                texto,
-                style: TextStyle(
-                  color: AppColorsLight.textPrimary,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _waterInfo(bool hasWater) {
-    return Row(
-      children: [
-        Icon(
-          hasWater ? Icons.water : Icons.water_outlined,
-          color: hasWater
-              ? AppColorsLight.primaryStrong
-              : AppColorsLight.textSecondary,
-          size: 20,
-        ),
-        SizedBox(width: 6),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: hasWater
-                ? AppColorsLight.lightOrangeOpacity
-                : AppColorsLight.border,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            hasWater ? "Tem água" : "Sem água",
-            style: TextStyle(
-              color: hasWater
-                  ? AppColorsLight.primaryStrong
-                  : AppColorsLight.textSecondary,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -296,43 +200,115 @@ class _MapPageState extends State<MapPage> {
           SizedBox(height: 2),
           Text(
             label,
-            style: TextStyle(fontSize: 12, color: AppColorsLight.textSecondary),
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColorsLight.textSecondary,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _tag(String text) {
-    return Chip(
-      label: Text(text),
-      backgroundColor: AppColorsLight.lightGreen,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  Widget _tag(String text) => Chip(
+    label: Text(text),
+    backgroundColor: AppColorsLight.lightGreen,
+    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  );
+
+  Widget _recommendationTag(bool recomendacao, String texto) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: recomendacao
+            ? AppColorsLight.primaryStrong.withOpacity(0.15)
+            : AppColorsLight.lightGreen.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            recomendacao ? Icons.explore : Icons.directions_walk,
+            color: recomendacao
+                ? AppColorsLight.primaryStrong
+                : AppColorsLight.secondaryStrong,
+            size: 20,
+          ),
+          SizedBox(width: 6),
+          Text(
+            recomendacao ? "Guia recomendado" : "Autônomo",
+            style: TextStyle(
+              color: recomendacao
+                  ? AppColorsLight.primaryStrong
+                  : AppColorsLight.secondaryStrong,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              texto,
+              style: TextStyle(
+                color: AppColorsLight.textPrimary,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  TextStyle _sectionTitle() {
-    return TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-      color: AppColorsLight.textPrimary,
-    );
-  }
+  Widget _waterInfo(bool hasWater) => Row(
+    children: [
+      Icon(
+        hasWater ? Icons.water : Icons.water_outlined,
+        color: hasWater
+            ? AppColorsLight.primaryStrong
+            : AppColorsLight.textSecondary,
+        size: 20,
+      ),
+      SizedBox(width: 6),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: hasWater
+              ? AppColorsLight.lightOrangeOpacity
+              : AppColorsLight.border,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          hasWater ? "Tem água" : "Sem água",
+          style: TextStyle(
+            color: hasWater
+                ? AppColorsLight.primaryStrong
+                : AppColorsLight.textSecondary,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    ],
+  );
+
+  TextStyle _sectionTitle() => TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: AppColorsLight.textPrimary,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MapWidget(
-        styleUri: MapboxStyles.MAPBOX_STREETS,
-        onMapCreated: (map) async {
-          await controller.initMap(
-            map,
-            attractionList: attractions,
-            onTapAttraction: (attraction) {
-              showFixedPinSheet(attraction);
-            },
-          );
-        },
+      body: Stack(
+        children: [
+          MapWidget(
+            styleUri: MapboxStyles.MAPBOX_STREETS,
+            onMapCreated: _onMapCreated,
+          ),
+          if (isLoading) Center(child: CircularProgressIndicator()),
+        ],
       ),
     );
   }

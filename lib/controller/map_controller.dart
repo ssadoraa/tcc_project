@@ -9,16 +9,12 @@ import 'package:tcc_project/model/attraction_dependence.dart';
 
 class MapController {
   final MapService mapService = MapService();
-
   StreamSubscription<Position>? positionStream;
   Uint8List? userIcon;
   Uint8List? fixedIcon;
   bool _initialCameraMoved = false;
 
-  /// Lista de atrações
   List<AttractionDependence> attractions = [];
-
-  /// Callback quando um pin é clicado
   Function(AttractionDependence)? onAttractionTap;
 
   Future<void> loadIcons() async {
@@ -27,7 +23,6 @@ class MapController {
       size: 200,
       color: Colors.blue,
     );
-
     fixedIcon = await iconToBytes(
       Icons.location_on,
       size: 200,
@@ -37,15 +32,15 @@ class MapController {
 
   Future<void> initMap(
     mapbox.MapboxMap map, {
-    required List<AttractionDependence> attractionList,
     required Function(AttractionDependence) onTapAttraction,
   }) async {
-    attractions = attractionList;
     onAttractionTap = onTapAttraction;
 
     mapService.initMap(map);
-    await loadIcons();
     await mapService.initAnnotationManager();
+    await loadIcons();
+
+    attractions = await mapService.fetchAttractionsFromFirebase();
 
     await _addAttractionPins();
     await _startTrackingUser();
@@ -53,7 +48,6 @@ class MapController {
 
   Future<void> _addAttractionPins() async {
     if (fixedIcon == null) return;
-
     for (var attraction in attractions) {
       await mapService.addMarker(
         lat: attraction.latitude,
@@ -68,21 +62,19 @@ class MapController {
   Future<void> _startTrackingUser() async {
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) return;
+        permission == LocationPermission.deniedForever)
+      return;
 
     positionStream = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 5,
       ),
-    ).listen((pos) {
-      updateUserLocation(pos);
-    });
+    ).listen(updateUserLocation);
   }
 
   Future<void> updateUserLocation(Position pos) async {
     if (userIcon == null) return;
-
     await mapService.updateUserLocation(
       lat: pos.latitude,
       lng: pos.longitude,
@@ -91,7 +83,6 @@ class MapController {
 
     if (!_initialCameraMoved) {
       _initialCameraMoved = true;
-
       await mapService.moveCameraWithZoom(
         pos.latitude,
         pos.longitude,

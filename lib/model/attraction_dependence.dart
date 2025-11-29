@@ -49,10 +49,7 @@ class AttractionDependence {
     required this.longitude,
   });
 
-  factory AttractionDependence.fromFirestore(
-    String id,
-    Map<String, dynamic> data,
-  ) {
+  factory AttractionDependence.fromFirestore(String id, Map<String, dynamic> data) {
     return AttractionDependence(
       id: id,
       qrCode: data['qr_code'] ?? '',

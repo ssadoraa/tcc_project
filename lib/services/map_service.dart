@@ -1,28 +1,19 @@
-import 'dart:async';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
+import 'package:tcc_project/model/attraction_dependence.dart';
 
 class MapService {
   mapbox.MapboxMap? map;
   mapbox.PointAnnotationManager? annotationManager;
-
   mapbox.PointAnnotation? userMarker;
-
-  double? _userLat;
-  double? _userLng;
-
   final Map<String, Function()> tapCallbacks = {};
 
-  void initMap(mapbox.MapboxMap m) {
-    map = m;
-  }
+  void initMap(mapbox.MapboxMap m) => map = m;
 
   Future<void> initAnnotationManager() async {
     if (map == null) return;
-
-    annotationManager =
-        await map!.annotations.createPointAnnotationManager();
-
+    annotationManager = await map!.annotations.createPointAnnotationManager();
     annotationManager!.addOnPointAnnotationClickListener(
       PointClickListener(tapCallbacks),
     );
@@ -30,25 +21,22 @@ class MapService {
 
   Future<void> moveCamera(double lat, double lng) async {
     if (map == null) return;
-
     await map!.setCamera(
       mapbox.CameraOptions(
-        center: mapbox.Point(
-          coordinates: mapbox.Position(lng, lat),
-        ),
+        center: mapbox.Point(coordinates: mapbox.Position(lng, lat)),
       ),
     );
   }
 
-  Future<void> moveCameraWithZoom(double lat, double lng,
-      {double zoom = 16}) async {
+  Future<void> moveCameraWithZoom(
+    double lat,
+    double lng, {
+    double zoom = 16,
+  }) async {
     if (map == null) return;
-
     await map!.setCamera(
       mapbox.CameraOptions(
-        center: mapbox.Point(
-          coordinates: mapbox.Position(lng, lat),
-        ),
+        center: mapbox.Point(coordinates: mapbox.Position(lng, lat)),
         zoom: zoom,
       ),
     );
@@ -62,21 +50,13 @@ class MapService {
     Function()? onTap,
   }) async {
     if (annotationManager == null) return null;
-
     final options = mapbox.PointAnnotationOptions(
-      geometry: mapbox.Point(
-        coordinates: mapbox.Position(lng, lat),
-      ),
+      geometry: mapbox.Point(coordinates: mapbox.Position(lng, lat)),
       image: image,
       iconSize: iconSize,
     );
-
     final marker = await annotationManager!.create(options);
-
-    if (onTap != null) {
-      tapCallbacks[marker.id] = onTap;
-    }
-
+    if (onTap != null) tapCallbacks[marker.id] = onTap;
     return marker;
   }
 
@@ -87,23 +67,22 @@ class MapService {
     double iconSize = 0.4,
   }) async {
     if (annotationManager == null) return;
-
-    if (userMarker != null) {
-      await annotationManager!.delete(userMarker!);
-    }
-
+    if (userMarker != null) await annotationManager!.delete(userMarker!);
     final options = mapbox.PointAnnotationOptions(
-      geometry: mapbox.Point(
-        coordinates: mapbox.Position(lng, lat),
-      ),
+      geometry: mapbox.Point(coordinates: mapbox.Position(lng, lat)),
       image: image,
       iconSize: iconSize,
     );
-
     userMarker = await annotationManager!.create(options);
+  }
 
-    _userLat = lat;
-    _userLng = lng;
+  Future<List<AttractionDependence>> fetchAttractionsFromFirebase() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('attractions')
+        .get();
+    return snapshot.docs
+        .map((doc) => AttractionDependence.fromFirestore(doc.id, doc.data()))
+        .toList();
   }
 }
 
