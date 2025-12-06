@@ -33,6 +33,10 @@ class _MapPageState extends State<MapPage> {
   }
 
   void showFixedPinSheet(AttractionDependence attraction) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -200,10 +204,7 @@ class _MapPageState extends State<MapPage> {
           SizedBox(height: 2),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColorsLight.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColorsLight.textSecondary),
           ),
         ],
       ),
@@ -249,10 +250,7 @@ class _MapPageState extends State<MapPage> {
           Flexible(
             child: Text(
               texto,
-              style: TextStyle(
-                color: AppColorsLight.textPrimary,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: AppColorsLight.textPrimary, fontSize: 14),
             ),
           ),
         ],

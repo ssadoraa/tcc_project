@@ -13,6 +13,7 @@ class MapService {
 
   Future<void> initAnnotationManager() async {
     if (map == null) return;
+    tapCallbacks.clear();
     annotationManager = await map!.annotations.createPointAnnotationManager();
     annotationManager!.addOnPointAnnotationClickListener(
       PointClickListener(tapCallbacks),

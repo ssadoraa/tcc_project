@@ -48,6 +48,8 @@ class MapController {
 
   Future<void> _addAttractionPins() async {
     if (fixedIcon == null) return;
+    await mapService.annotationManager?.deleteAll();
+
     for (var attraction in attractions) {
       await mapService.addMarker(
         lat: attraction.latitude,
