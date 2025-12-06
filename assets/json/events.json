@@ -1,0 +1,17 @@
+[
+    {
+        "id": "EVT-01",
+        "titulo": "1ª Mostra da Biodiversidade do Parque Estadual do Desengano",
+        "imageName": "primeira-mostra-biodiversidade-ped.jpg"
+    },
+    {
+        "id": "EVT-02",
+        "titulo": "Abelhas Nativas sem Ferrão",
+        "imageName": "abelhas.png"
+    },
+    {
+        "id": "EVT-03",
+        "titulo": "História da Astronomia e Observação Astronômica",
+        "imageName": "astronomia.png"
+    }
+]

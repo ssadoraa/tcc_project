@@ -55,13 +55,13 @@ class _MapPageState extends State<MapPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    attraction.image.isNotEmpty
+                    attraction.imageUrl.isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(20),
                             ),
                             child: Image.network(
-                              attraction.image,
+                              attraction.imageUrl,
                               height: 180,
                               width: double.infinity,
                               fit: BoxFit.cover,

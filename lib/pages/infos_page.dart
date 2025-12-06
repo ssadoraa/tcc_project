@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_project/theme/app_colors.dart';
 import 'package:tcc_project/widgets/phrase_card.dart';
-import 'package:tcc_project/widgets/events.dart';
+import 'package:tcc_project/widgets/events_page.dart';
 import 'package:tcc_project/widgets/guides_contact.dart';
 
 class InfosPage extends StatefulWidget {

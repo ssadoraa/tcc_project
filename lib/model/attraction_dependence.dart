@@ -2,17 +2,17 @@ class AttractionDependence {
   final String id;
   final String qrCode;
   final String titulo;
-  final String image;
+  final String imageUrl;
   final String localizacao;
   final String municipio;
   final String tempoEstimado;
   final String dificuldade;
   final String descricao;
   final double distanciaKm;
-  final int altitudeInicial;
-  final int altitudeMaxima;
-  final int altitudeFinal;
-  final int ganhoAltitude;
+  final double altitudeInicial;
+  final double altitudeMaxima;
+  final double altitudeFinal;
+  final double ganhoAltitude;
   final List<dynamic> floraRelevante;
   final List<dynamic> atrativos;
   final List<dynamic> infraestrutura;
@@ -27,7 +27,7 @@ class AttractionDependence {
     required this.id,
     required this.qrCode,
     required this.titulo,
-    required this.image,
+    required this.imageUrl,
     required this.localizacao,
     required this.municipio,
     required this.tempoEstimado,
@@ -54,17 +54,17 @@ class AttractionDependence {
       id: id,
       qrCode: data['qr_code'] ?? '',
       titulo: data['titulo'] ?? '',
-      image: data['image'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
       localizacao: data['localizacao'] ?? '',
       municipio: data['municipio'] ?? '',
       tempoEstimado: data['tempo_estimado'] ?? '',
       dificuldade: data['dificuldade'] ?? '',
       descricao: data['descricao'] ?? '',
       distanciaKm: (data['distancia_km'] ?? 0).toDouble(),
-      altitudeInicial: data['altitude_inicial'] ?? 0,
-      altitudeMaxima: data['altitude_maxima'] ?? 0,
-      altitudeFinal: data['altitude_final'] ?? 0,
-      ganhoAltitude: data['ganho_altitude'] ?? 0,
+      altitudeInicial: (data['altitude_inicial'] ?? 0).toDouble(),
+      altitudeMaxima: (data['altitude_maxima'] ?? 0).toDouble(),
+      altitudeFinal: (data['altitude_final'] ?? 0).toDouble(),
+      ganhoAltitude: (data['ganho_altitude'] ?? 0).toDouble(),
       floraRelevante: data['flora_relevante'] ?? [],
       atrativos: data['atrativos'] ?? [],
       infraestrutura: data['infraestrutura'] ?? [],

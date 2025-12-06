@@ -81,7 +81,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  Widget buildAltitudeInfo(int inicial, int maxima, int finalAlt) {
+  Widget buildAltitudeInfo(double inicial, double maxima, double finalAlt) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -92,7 +92,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  Widget buildAltitudeColumn(IconData icon, String label, int value) {
+  Widget buildAltitudeColumn(IconData icon, String label, double value) {
     return Column(
       children: [
         Icon(icon, color: AppColors.primary(context)),
@@ -193,7 +193,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   child: Stack(
                     children: [
                       Image.network(
-                        a.image,
+                        a.imageUrl,
                         height: 250,
                         width: double.infinity,
                         fit: BoxFit.cover,

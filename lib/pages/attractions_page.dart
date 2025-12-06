@@ -196,7 +196,7 @@ class _AttractionPageState extends State<AttractionPage> {
                       top: Radius.circular(12),
                     ),
                     child: Image.network(
-                      a.image,
+                      a.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       color: isUnlocked ? null : AppColors.black(context).withOpacity(0.4),

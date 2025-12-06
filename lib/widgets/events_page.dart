@@ -28,6 +28,8 @@ class Events extends StatelessWidget {
             );
           }
 
+          final events = snapshot.data!;
+          events.sort((a, b) => b.data!.compareTo(a.data!));
           controller.loadEvents(snapshot.data!);
 
           if (controller.allEvents.isEmpty) {

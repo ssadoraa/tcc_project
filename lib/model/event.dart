@@ -20,7 +20,7 @@ class Event {
     return Event(
       id: doc.id,
       titulo: data['titulo'] ?? 'Evento sem título',
-      imageUrl: data['imagemUrl'] ??
+      imageUrl: data['imageUrl'] ??
           'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60',
       data: data['data'] != null ? (data['data'] as Timestamp).toDate() : null,
     );
