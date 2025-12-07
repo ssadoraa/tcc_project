@@ -36,7 +36,7 @@ class _MapPageState extends State<MapPage> {
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -50,9 +50,7 @@ class _MapPageState extends State<MapPage> {
             return Container(
               decoration: BoxDecoration(
                 color: AppColorsLight.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: SingleChildScrollView(
                 controller: scrollController,
@@ -145,7 +143,10 @@ class _MapPageState extends State<MapPage> {
                           if (attraction.recomendacao.isNotEmpty) ...[
                             Text("Recomendação", style: _sectionTitle()),
                             SizedBox(height: 8),
-                            _recommendationTag(false, attraction.recomendacao),
+                            _recommendationTag(
+                              attraction.guia,
+                              attraction.recomendacao,
+                            ),
                             SizedBox(height: 16),
                           ],
                           if (attraction.atrativos.isNotEmpty) ...[
@@ -217,41 +218,46 @@ class _MapPageState extends State<MapPage> {
     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
   );
 
-  Widget _recommendationTag(bool recomendacao, String texto) {
+  Widget _recommendationTag(bool guia, String recomendacao) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: recomendacao
+        color: guia
             ? AppColorsLight.primaryStrong.withOpacity(0.15)
             : AppColorsLight.lightGreen.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            recomendacao ? Icons.explore : Icons.directions_walk,
-            color: recomendacao
-                ? AppColorsLight.primaryStrong
-                : AppColorsLight.secondaryStrong,
-            size: 20,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                guia ? Icons.explore : Icons.directions_walk,
+                color: guia
+                    ? AppColorsLight.primaryStrong
+                    : AppColorsLight.secondaryStrong,
+                size: 20,
+              ),
+              SizedBox(width: 6),
+              Text(
+                guia ? "Guia recomendado" : "Autônomo",
+                style: TextStyle(
+                  color: guia
+                      ? AppColorsLight.primaryStrong
+                      : AppColorsLight.secondaryStrong,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          SizedBox(width: 6),
+
+          SizedBox(height: 6),
+
           Text(
-            recomendacao ? "Guia recomendado" : "Autônomo",
-            style: TextStyle(
-              color: recomendacao
-                  ? AppColorsLight.primaryStrong
-                  : AppColorsLight.secondaryStrong,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              texto,
-              style: TextStyle(color: AppColorsLight.textPrimary, fontSize: 14),
-            ),
+            recomendacao,
+            style: TextStyle(color: AppColorsLight.textPrimary, fontSize: 14),
           ),
         ],
       ),

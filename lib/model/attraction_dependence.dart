@@ -17,7 +17,7 @@ class AttractionDependence {
   final List<dynamic> atrativos;
   final List<dynamic> infraestrutura;
   final bool agua;
-  final String condicaoTrilha;
+  final bool guia;
   final String recomendacao;
   final String historico;
   final double latitude;
@@ -42,14 +42,17 @@ class AttractionDependence {
     required this.atrativos,
     required this.infraestrutura,
     required this.agua,
-    required this.condicaoTrilha,
+    required this.guia,
     required this.recomendacao,
     required this.historico,
     required this.latitude,
     required this.longitude,
   });
 
-  factory AttractionDependence.fromFirestore(String id, Map<String, dynamic> data) {
+  factory AttractionDependence.fromFirestore(
+    String id,
+    Map<String, dynamic> data,
+  ) {
     return AttractionDependence(
       id: id,
       qrCode: data['qr_code'] ?? '',
@@ -69,7 +72,7 @@ class AttractionDependence {
       atrativos: data['atrativos'] ?? [],
       infraestrutura: data['infraestrutura'] ?? [],
       agua: data['agua'] ?? false,
-      condicaoTrilha: data['condicao_trilha'] ?? '',
+      guia: data['guia'] ?? false,
       recomendacao: data['recomendacao'] ?? '',
       historico: data['historico'] ?? '',
       latitude: (data['latitude'] ?? 0).toDouble(),
