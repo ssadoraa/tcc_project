@@ -308,7 +308,7 @@ class _MapPageState extends State<MapPage> {
       body: Stack(
         children: [
           MapWidget(
-            styleUri: MapboxStyles.MAPBOX_STREETS,
+            styleUri: "mapbox://styles/isadorabv/cmivxmt9c001a01qpf9taarxu",
             onMapCreated: _onMapCreated,
           ),
           if (isLoading) Center(child: CircularProgressIndicator()),

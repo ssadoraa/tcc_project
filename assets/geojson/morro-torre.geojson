@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "morro-torre",
+        "tipo": "trilha"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -42.009406849521035,
+            -21.96266313835708
+          ],
+          [
+            -42.01723696589431,
+            -21.96718314643494
+          ]
+        ]
+      }
+    }
+  ]
+}

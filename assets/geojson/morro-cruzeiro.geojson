@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "morro-cruzeiro",
+        "tipo": "travessia"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -42.005099607474015,
+            -21.95258413821066
+          ],
+          [
+            -42.001862820943074,
+            -21.956523410569627
+          ],
+          [
+            -42.00525543318557,
+            -21.95899520609593
+          ]
+        ]
+      }
+    }
+  ]
+}

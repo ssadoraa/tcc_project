@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "estalagem",
+        "tipo": "trilha"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -41.918540628826086,
+            -21.868057727920547
+          ],
+          [
+            -41.91559420562577,
+            -21.876287668370395
+          ]
+        ]
+      }
+    }
+  ]
+}

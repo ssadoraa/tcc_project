@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "peito-moca",
+        "tipo": "trilha"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -41.84478571235153,
+            -21.819196575646835
+          ],
+          [
+            -41.84402991971864,
+            -21.820085194233556
+          ],
+          [
+            -41.843218905414695,
+            -21.825515172114116
+          ]
+        ]
+      }
+    }
+  ]
+}

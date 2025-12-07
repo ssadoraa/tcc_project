@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "mina",
+        "tipo": "trilha"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -41.91559420562577,
+            -21.876287668370395
+          ],
+          [
+            -41.91402649347599,
+            -21.879564864321775
+          ]
+        ]
+      }
+    }
+  ]
+}

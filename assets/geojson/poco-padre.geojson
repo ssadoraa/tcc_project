@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "poco-padre",
+        "tipo": "trilha"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -41.91559420562577,
+            -21.876287668370395
+          ],
+          [
+            -41.91559659051912,
+            -21.87640496672289
+          ],
+          [
+            -41.925917695742605,
+            -21.872746761475657
+          ]
+        ]
+      }
+    }
+  ]
+}

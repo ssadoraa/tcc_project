@@ -662,5 +662,29 @@
     "historico": "O Mirante do Desengano é um ponto de destaque dentro do Parque Estadual do Desengano, oferecendo aos visitantes uma oportunidade única de conexão com a natureza e apreciação da paisagem montanhosa que caracteriza a região. Sua localização estratégica permite uma visão priveligiada do céu que é considerado um dos mais limpos da América Latina, tendo o título de Dark Sky Park.",
     "latitude": -21.878532,
     "longitude": -41.929014
+  },
+  {
+    "qr_code": "POR-01",
+    "imageName": "portal.png",
+    "titulo": "Portal de Entrada do Parque Estadual do Desengano",
+    "distancia_km":"0",
+    "tempo_estimado": "20min",
+    "altitude_inicial": 26,
+    "altitude_maxima": 26,
+    "altitude_final": 26,
+    "ganho_altitude": 0,
+    "localizacao": "Morumbeca dos Marreiros",
+    "municipio": "Santa Maria Madalena – RJ",
+    "descricao": "Entrada do Parque Estadual do, por Santa Maria Madalena, que serve como ponto de recepção para visitantes e turistas. O portal é um marco simbólico que representa o início da jornada de exploração e aventura dentro do parque.",
+    "flora_relevante": ["florestas"],
+    "infraestrutura": ["sem infraestrutura"],
+    "agua": false,
+    "dificuldade": "Fácil",
+    "guia": false,
+    "recomendacao": "Levar água e lanche. Usar calçado adequado para trilha.",
+    "atrativos": ["belas paisagens", "céu estrelado"],
+    "historico": "O Portal de Entrada do Parque Estadual do Desengano é um ponto de destaque que marca o início da experiência dos visitantes na unidade de conservação. Ele simboliza a imersão na natureza preservada do parque, convidando os visitantes a explorarem suas trilhas, mirantes e belezas naturais.",
+    "latitude": -21.90198,
+    "longitude": -41.95046
   }
 ]
